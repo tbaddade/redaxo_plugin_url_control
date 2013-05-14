@@ -192,7 +192,7 @@ if ($func == 'add' || $func == 'edit') {
 }
 
 require_once $REX['INCLUDE_PATH'] . '/layout/top.php';
-rex_title($I18N->msg($addon) . ' :: ' . $I18N->msg('b_url_generate_title'), $REX['ADDON']['pages'][$addon]);
+rex_title($addon . ' :: ' . $I18N->msg('b_url_generate_title'), $REX['ADDON']['pages'][$addon]);
 echo $echo;
 require_once $REX['INCLUDE_PATH'] . '/layout/bottom.php';
 
