@@ -20,19 +20,19 @@ $addon = strtolower($addon);
 $rewriter = array(
     'yrewrite' => array(
         'extension_point'       => 'YREWRITE_PREPARE',
-        'extension_function'    => 'rewriter_yrewrite',
+        'extension_function'    => 'extension_rewriter_yrewrite',
         'pages'                 => true,
         'subpages'              => false,
     ),
     'rexseo' => array(
         'extension_point'       => 'REXSEO_ARTICLE_ID_NOT_FOUND',
-        'extension_function'    => 'rewriter_rexseo',
+        'extension_function'    => 'extension_rewriter_rexseo',
         'pages'                 => false,
         'subpages'              => true,
     ),
     'rexseo42' => array(
         'extension_point'       => 'REXSEO_ARTICLE_ID_NOT_FOUND',
-        'extension_function'    => 'rewriter_rexseo42',
+        'extension_function'    => 'extension_rewriter_rexseo42',
         'pages'                 => false,
         'subpages'              => true,
     )
@@ -91,6 +91,8 @@ if ($REX['MOD_REWRITE'] !== false && !$REX['SETUP']) {
     $extension_function = $rewriter[$addon]['extension_function'];
 
     rex_register_extension($extension_point, 'url_generate::' . $extension_function);
+
+    rex_register_extension('ADDONS_INCLUDED', 'url_generate::extension_register_extensions', '', REX_EXTENSION_EARLY);
 
 }
 

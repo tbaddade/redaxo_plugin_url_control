@@ -17,8 +17,8 @@ class url_generate
     public static function init()
     {
         global $REX;
-        self::$path_file    = $REX['INCLUDE_PATH'].'/generated/files/url_generate_path_file.php';
-        self::$paths        = self::getPaths();
+        self::$path_file = $REX['INCLUDE_PATH'].'/generated/files/url_generate_path_file.php';
+        self::$paths     = self::getPaths();
     }
 
 
@@ -26,11 +26,10 @@ class url_generate
      * REDAXO Artikel Id setzen
      *
      */
-    public static function rewriter_yrewrite()
+    public static function extension_rewriter_yrewrite()
     {
         global $REX;
         $params = url_generate::getArticleParams();
-
         if ((int)$params['article_id'] > 0) {
             $REX['ARTICLE_ID'] = $params['article_id'];
             $REX['CUR_CLANG']  = $params['clang'];
@@ -41,17 +40,35 @@ class url_generate
     }
 
 
-    public static function rewriter_rexseo()
+    public static function extension_rewriter_rexseo()
     {
         $params = url_generate::getArticleParams();
         return $params;
     }
 
 
-    public static function rewriter_rexseo42()
+    public static function extension_rewriter_rexseo42()
     {
         $params = url_generate::getArticleParams();
         return $params;
+    }
+
+    public static function extension_register_extensions ()
+    {
+        global $REX;
+        // refresh PathFile
+        if ($REX['REDAXO']) {
+            $extension_points = array(
+                'CAT_ADDED',   'CAT_UPDATED',   'CAT_DELETED',
+                'ART_ADDED',   'ART_UPDATED',   'ART_DELETED',
+                'CLANG_ADDED', 'CLANG_UPDATED', 'CLANG_DELETED',
+                'ALL_GENERATED'
+            );
+
+            foreach($extension_points as $extension_point) {
+                rex_register_extension($extension_point, 'url_generate::generatePathFile');
+            }
+        }
     }
 
 
@@ -75,7 +92,7 @@ class url_generate
         $paths = array();
         if ($sql->getRows() >= 1) {
             $results = $sql->getArray();
-
+            $server  = self::getServer(true);
             foreach ($results as $result) {
 
                 $article_id = $result['article_id'];
@@ -83,10 +100,10 @@ class url_generate
 
                 $a = OOArticle::getArticleById($article_id, $clang);
                 if ($a instanceof OOArticle) {
-                    $path = $a->getUrl().'/';
-                    $path = ltrim($path, '/');
-                    $path = str_replace('.html', '', $path);
 
+                    $path = $a->getUrl();
+                    $path = self::getCleanPath($path);
+                    $path = $server . $path;
 
                     $table          = $result['table'];
                     $table_params   = unserialize($result['table_parameters']);
@@ -126,9 +143,9 @@ class url_generate
     {
         global $REX;
 
-        $url = self::getUrlPath();
+        $url    = self::getUrlPath();
+        $paths  = self::$paths;
 
-        $paths = self::$paths;
         foreach ($paths as $table => $article_ids) {
 
             foreach ($article_ids as $article_id => $clangs) {
@@ -159,24 +176,28 @@ class url_generate
     {
         global $REX;
 
-        $url = self::getUrlPath();
+        $url    = self::getUrlPath();
+        $paths  = self::$paths;
 
-        $paths = self::$paths;
         foreach ($paths as $table => $article_ids) {
 
             foreach ($article_ids as $article_id => $clangs) {
 
-                foreach ($clangs as $clang => $ids) {
+                if ($article_id == $REX['ARTICLE_ID']) {
 
-                    if ($REX['CUR_CLANG'] == $clang) {
+                    foreach ($clangs as $clang => $ids) {
 
-                        foreach ($ids as $id => $path) {
-                            if ($path == $url) {
-                                return $id;
+                        if ($REX['CUR_CLANG'] == $clang) {
+
+                            foreach ($ids as $id => $path) {
+                                if ($path == $url) {
+                                    return $id;
+                                }
                             }
-                        }
 
+                        }
                     }
+
                 }
             }
         }
@@ -204,16 +225,19 @@ class url_generate
 
                 foreach ($article_ids as $article_id => $clangs) {
 
-                    foreach ($clangs as $clang => $ids) {
+                    if ($article_id == $REX['ARTICLE_ID']) {
 
-                        if ($REX['CUR_CLANG'] == $clang) {
+                        foreach ($clangs as $clang => $ids) {
 
-                            foreach ($ids as $id => $path) {
-                                if ($primary_id == $id) {
-                                    return $path;
+                            if ($REX['CUR_CLANG'] == $clang) {
+
+                                foreach ($ids as $id => $path) {
+                                    if ($primary_id == $id) {
+                                        return substr($path, strpos($path, '/'));
+                                    }
                                 }
-                            }
 
+                            }
                         }
                     }
                 }
@@ -238,12 +262,18 @@ class url_generate
 
                 foreach ($article_ids as $article_id => $clangs) {
 
-                    foreach ($clangs as $clang => $ids) {
+                    if ($article_id == $REX['ARTICLE_ID']) {
 
-                        if ($REX['CUR_CLANG'] == $clang) {
+                        foreach ($clangs as $clang => $ids) {
 
-                            return $ids;
+                            if ($REX['CUR_CLANG'] == $clang) {
+                                $save = array();
+                                foreach ($ids as $id => $path) {
+                                    $save[$id] = substr($path, strpos($path, '/'));
+                                }
+                                return $save;
 
+                            }
                         }
                     }
                 }
@@ -261,6 +291,7 @@ class url_generate
     {
         $url_path = urldecode($_SERVER['REQUEST_URI']);
         $url_path = ltrim($url_path, '/');
+        $url_path = $_SERVER['SERVER_NAME'] . '/' . $url_path;
 
         // query löschen
         if(($pos = strpos($url_path, '?')) !== false) {
@@ -288,5 +319,43 @@ class url_generate
         }
         $content = file_get_contents(self::$path_file);
         return json_decode($content, true);
+    }
+
+
+
+    /**
+     *
+     *
+     */
+    protected static function getCleanPath($path)
+    {
+        global $REX;
+        return trim(str_replace(array(self::getServer(), $REX['SERVER'], '.html'), '', $path), '/') . '/';
+    }
+
+
+
+    /**
+     *
+     *
+     */
+    protected static function getServer($ignore_scheme = false)
+    {
+        global $REX;
+        $server = trim($REX['SERVER'], '/') . '/';
+        if (strpos($server, '://') === false) {
+            $scheme = 'http';
+            if($_SERVER['SERVER_PORT'] == 443) {
+                $scheme .= 's';
+            }
+            $server = $scheme . '://' . $server;
+        }
+
+        if ($ignore_scheme) {
+            $parse  = parse_url($server);
+            $server = $parse['host'] . $parse['path'];
+        }
+
+        return $server;
     }
 }
