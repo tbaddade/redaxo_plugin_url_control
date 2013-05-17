@@ -50,9 +50,7 @@ if ($func == '') {
             '$params',
             'global $I18N;
              $list = $params["list"];
-             $a = new rex_article();
-             $a->setArticleId($list->getValue("article_id"));
-             $a->setClang($list->getValue("clang"));
+             $a = OOArticle::getArticleById($list->getValue("article_id"), $list->getValue("clang"));
 
              $str = $a->getValue("name");
              $str .= " [";
