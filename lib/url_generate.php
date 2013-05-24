@@ -8,7 +8,7 @@
  *
  */
 
-class url_generate
+class url_generate extends url_control
 {
     static $path_file;
     static $paths;
@@ -17,58 +17,13 @@ class url_generate
     public static function init()
     {
         global $REX;
-        self::$path_file = $REX['INCLUDE_PATH'].'/generated/files/url_generate_path_file.php';
+        self::$path_file = $REX['INCLUDE_PATH'].'/generated/files/url_control_generate_path_file.php';
         self::$paths     = self::getPaths();
-    }
-
-
-    /**
-     * REDAXO Artikel Id setzen
-     *
-     */
-    public static function extension_rewriter_yrewrite()
-    {
-        global $REX;
-        $params = url_generate::getArticleParams();
-        if ((int)$params['article_id'] > 0) {
-            $REX['ARTICLE_ID'] = $params['article_id'];
-            $REX['CUR_CLANG']  = $params['clang'];
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-
-    public static function extension_rewriter_rexseo()
-    {
-        $params = url_generate::getArticleParams();
-        return $params;
-    }
-
-
-    public static function extension_rewriter_rexseo42()
-    {
-        $params = url_generate::getArticleParams();
-        return $params;
-    }
-
-    public static function extension_register_extensions ()
-    {
-        global $REX;
-        // refresh PathFile
-        if ($REX['REDAXO']) {
-            $extension_points = array(
-                'CAT_ADDED',   'CAT_UPDATED',   'CAT_DELETED',
-                'ART_ADDED',   'ART_UPDATED',   'ART_DELETED',
-                'CLANG_ADDED', 'CLANG_UPDATED', 'CLANG_DELETED',
-                'ALL_GENERATED'
-            );
-
-            foreach($extension_points as $extension_point) {
-                rex_register_extension($extension_point, 'url_generate::generatePathFile');
-            }
-        }
+/*
+        echo '<pre style="text-align: left">';
+        print_r(self::$paths);
+        echo '</pre>';
+*/
     }
 
 
@@ -79,12 +34,15 @@ class url_generate
     public static function generatePathFile($params)
     {
         global $REX;
+        $myself   = 'url_control';
+        $addon    = $REX['ADDON'][$myself]['addon'];
+        $rewriter = $REX['ADDON'][$myself]['rewriter'];
 
         $query = '  SELECT  `article_id`,
                             `clang`,
                             `table`,
                             `table_parameters`
-                    FROM    ' . $REX['TABLE_PREFIX'] . 'url_generate
+                    FROM    ' . $REX['TABLE_PREFIX'] . 'url_control_generate
                     ';
         $sql = rex_sql::factory();
         $sql->setQuery($query);
@@ -92,7 +50,6 @@ class url_generate
         $paths = array();
         if ($sql->getRows() >= 1) {
             $results = $sql->getArray();
-            $server  = self::getServer(true);
             foreach ($results as $result) {
 
                 $article_id = $result['article_id'];
@@ -101,9 +58,13 @@ class url_generate
                 $a = OOArticle::getArticleById($article_id, $clang);
                 if ($a instanceof OOArticle) {
 
-                    $path = $a->getUrl();
-                    $path = self::getCleanPath($path);
-                    $path = $server . $path;
+                    if (isset($rewriter[$addon]['get_url'])) {
+                        $func = $rewriter[$addon]['get_url'];
+                        $path = call_user_func($func, $article_id, $clang);
+                    } else {
+                        $path = $a->getUrl();
+                    }
+                    $path = parent::getCleanPath($path);
 
                     $table          = $result['table'];
                     $table_params   = unserialize($result['table_parameters']);
@@ -128,7 +89,6 @@ class url_generate
                 }
             }
         }
-
         rex_put_file_contents(self::$path_file, json_encode($paths));
     }
 
@@ -143,7 +103,7 @@ class url_generate
     {
         global $REX;
 
-        $url    = self::getUrlPath();
+        $url    = parent::getUrlPath();
         $paths  = self::$paths;
 
         foreach ($paths as $table => $article_ids) {
@@ -169,35 +129,53 @@ class url_generate
 
 
     /**
-     * gibt die Id des Datensatzes anhand der Url zurück
+     * gibt die Ids einer Tabelle zurück
      *
      */
-    public static function getId()
+    public static function getIds($table_name)
     {
         global $REX;
 
-        $url    = self::getUrlPath();
         $paths  = self::$paths;
 
         foreach ($paths as $table => $article_ids) {
 
-            foreach ($article_ids as $article_id => $clangs) {
+            if ($table_name == $table) {
 
-                if ($article_id == $REX['ARTICLE_ID']) {
+                foreach ($article_ids as $article_id => $clangs) {
 
-                    foreach ($clangs as $clang => $ids) {
+                    if ($article_id == $REX['ARTICLE_ID']) {
 
-                        if ($REX['CUR_CLANG'] == $clang) {
+                        foreach ($clangs as $clang => $ids) {
 
-                            foreach ($ids as $id => $path) {
-                                if ($path == $url) {
-                                    return $id;
-                                }
+                            if ($REX['CUR_CLANG'] == $clang) {
+                                return $ids;
                             }
-
                         }
-                    }
 
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+
+
+    /**
+     * gibt die Id des Datensatzes anhand der Url zurück
+     *
+     */
+    public static function getId($table_name)
+    {
+        $url = parent::getUrlPath();
+        $ids = self::getIds($table_name);
+
+        if ($ids) {
+            foreach ($ids as $id => $path) {
+                if ($path == $url) {
+                    return $id;
                 }
             }
         }
@@ -209,37 +187,20 @@ class url_generate
      * gibt die Url des Datensatzes anhand der Primary Id zurück
      *
      */
-    public static function getUrlById($primary_id, $table_name)
+    public static function getUrlById($table_name, $primary_id)
     {
-        global $REX;
-
         if ((int)$primary_id < 1) {
             return;
         }
 
 
-        $paths = self::$paths;
-        foreach ($paths as $table => $article_ids) {
+        $ids = self::getIds($table_name);
 
-            if ($table_name == $table) {
-
-                foreach ($article_ids as $article_id => $clangs) {
-
-                    if ($article_id == $REX['ARTICLE_ID']) {
-
-                        foreach ($clangs as $clang => $ids) {
-
-                            if ($REX['CUR_CLANG'] == $clang) {
-
-                                foreach ($ids as $id => $path) {
-                                    if ($primary_id == $id) {
-                                        return substr($path, strpos($path, '/'));
-                                    }
-                                }
-
-                            }
-                        }
-                    }
+        if ($ids) {
+            foreach ($ids as $id => $path) {
+                if ($primary_id == $id) {
+                    // alles vor dem ersten / (Slash) trimmen
+                    return substr($path, strpos($path, '/'));
                 }
             }
         }
@@ -248,62 +209,21 @@ class url_generate
 
 
     /**
-     * gibt die Urls der Tabelle zurück
+     * gibt alle Urls einer Tabelle zurück
      *
      */
     public static function getUrlsByTable($table_name)
     {
-        global $REX;
+        $ids = self::getIds($table_name);
 
-        $paths = self::$paths;
-        foreach ($paths as $table => $article_ids) {
-
-            if ($table_name == $table) {
-
-                foreach ($article_ids as $article_id => $clangs) {
-
-                    if ($article_id == $REX['ARTICLE_ID']) {
-
-                        foreach ($clangs as $clang => $ids) {
-
-                            if ($REX['CUR_CLANG'] == $clang) {
-                                $save = array();
-                                foreach ($ids as $id => $path) {
-                                    $save[$id] = substr($path, strpos($path, '/'));
-                                }
-                                return $save;
-
-                            }
-                        }
-                    }
-                }
+        if ($ids) {
+            $save = array();
+            foreach ($ids as $id => $path) {
+                // alles vor dem ersten / (Slash) trimmen
+                $save[$id] = substr($path, strpos($path, '/'));
             }
+            return $save;
         }
-    }
-
-
-
-    /**
-     * gibt den Urlpfad zurück
-     *
-     */
-    protected static function getUrlPath()
-    {
-        $url_path = urldecode($_SERVER['REQUEST_URI']);
-        $url_path = ltrim($url_path, '/');
-        $url_path = $_SERVER['SERVER_NAME'] . '/' . $url_path;
-
-        // query löschen
-        if(($pos = strpos($url_path, '?')) !== false) {
-            $url_path = substr($url_path, 0, $pos);
-        }
-
-        // fragment löschen
-        if(($pos = strpos($url_path, '#')) !== false) {
-            $url_path = substr($url_path, 0, $pos);
-        }
-
-        return $url_path;
     }
 
 
@@ -319,43 +239,5 @@ class url_generate
         }
         $content = file_get_contents(self::$path_file);
         return json_decode($content, true);
-    }
-
-
-
-    /**
-     *
-     *
-     */
-    protected static function getCleanPath($path)
-    {
-        global $REX;
-        return trim(str_replace(array(self::getServer(), $REX['SERVER'], '.html'), '', $path), '/') . '/';
-    }
-
-
-
-    /**
-     *
-     *
-     */
-    protected static function getServer($ignore_scheme = false)
-    {
-        global $REX;
-        $server = trim($REX['SERVER'], '/') . '/';
-        if (strpos($server, '://') === false) {
-            $scheme = 'http';
-            if($_SERVER['SERVER_PORT'] == 443) {
-                $scheme .= 's';
-            }
-            $server = $scheme . '://' . $server;
-        }
-
-        if ($ignore_scheme) {
-            $parse  = parse_url($server);
-            $server = $parse['host'] . $parse['path'];
-        }
-
-        return $server;
     }
 }

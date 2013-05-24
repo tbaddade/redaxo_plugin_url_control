@@ -9,7 +9,7 @@
  *
  */
 
-$myself = 'url_generate';
+$myself = 'url_control';
 $addon  = $REX['ADDON'][$myself]['addon'];
 
 $oid  = rex_request('oid', 'int');
@@ -26,9 +26,9 @@ if ($func == '') {
                             `url`,
                             `table`,
                             `table_parameters`
-                FROM        ' . $REX['TABLE_PREFIX'] . 'url_generate';
+                FROM        ' . $REX['TABLE_PREFIX'] . 'url_control_generate';
 
-    $list = rex_list::factory($query, 30, 'url_generate');
+    $list = rex_list::factory($query, 30, 'url_control_generate');
 //	$list->debug = true;
     $list->setNoRowsMessage($I18N->msg('b_no_results'));
     $list->setCaption($I18N->msg('b_tables'));
@@ -102,7 +102,7 @@ if ($func == 'add' || $func == 'edit') {
 
     $legend = $func == 'edit' ? $I18N->msg('b_edit') : $I18N->msg('b_add');
 
-    $form = new rex_form($REX['TABLE_PREFIX'] . 'url_generate', $I18N->msg('b_table') . ' ' . $legend, 'id=' . $oid, 'post', false);
+    $form = new rex_form($REX['TABLE_PREFIX'] . 'url_control_generate', $I18N->msg('b_table') . ' ' . $legend, 'id=' . $oid, 'post', false);
 	//$form->debug = true;
 
     if($func == 'edit') {
@@ -165,7 +165,7 @@ if ($func == 'add' || $func == 'edit') {
             $f1 =& $fieldContainer->addGroupedField($group, $type, $name, $value, $attributes = array());
             $f1->setLabel($I18N->msg('b_url'));
             $f1->setAttribute('style', 'width: 200px;');
-            $f1->setNotice($I18N->msg('b_url_generate_notice_name'));
+            $f1->setNotice($I18N->msg('b_url_control_generate_notice_name'));
             $select =& $f1->getSelect();
             $select->setSize(1);
             $select->addOptions($options, true);
@@ -177,7 +177,7 @@ if ($func == 'add' || $func == 'edit') {
             $f2 =& $fieldContainer->addGroupedField($group, $type, $name, $value, $attributes = array());
             $f2->setLabel($I18N->msg('b_id'));
             $f2->setAttribute('style', 'width: 200px;');
-            $f2->setNotice($I18N->msg('b_url_generate_notice_id'));
+            $f2->setNotice($I18N->msg('b_url_control_generate_notice_id'));
             $select =& $f2->getSelect();
             $select->setSize(1);
             $select->addOptions($options, true);
@@ -190,7 +190,7 @@ if ($func == 'add' || $func == 'edit') {
 }
 
 require_once $REX['INCLUDE_PATH'] . '/layout/top.php';
-rex_title($addon . ' :: ' . $I18N->msg('b_url_generate_title'), $REX['ADDON']['pages'][$addon]);
+rex_title($addon . ' :: ' . $I18N->msg('b_url_control_generate_title'), $REX['ADDON']['pages'][$addon]);
 echo $echo;
 require_once $REX['INCLUDE_PATH'] . '/layout/bottom.php';
 
@@ -210,19 +210,6 @@ require_once $REX['INCLUDE_PATH'] . '/layout/bottom.php';
             $currentShown = $($table_id);
             $currentShown.show();
         }).change();
-
-
-        function url_generate_table(select) {
-            var $id = select.value;
-            $($id + '_1').css('display', 'block');
-            $($id + '_2').css('display', 'block');
-        }
     });
-
-
-    (function($) {
-    })(jQuery);
-
-</script>
 
 </script>

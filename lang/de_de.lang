@@ -9,10 +9,10 @@ b_sherlock = Sherlock
 b_sherlock_title = Sherlock
 b_watson = Watson
 b_watson_title = Watson
-b_url_generate = Urls erzeugen
-b_url_generate_title = Urls erzeugen
 
 
+b_action = Aktion
+b_active = aktiv
 b_add = hinzufügen
 b_add_entry = {0} hinzufügen
 b_article = Artikel
@@ -51,8 +51,11 @@ b_go_to_backend_startarticle = Gehe zum Startartikel im Backend
 b_go_to_frontend = Gehe zum Frontend/Website
 b_gross = Brutto
 
+b_http_type = Http Typ
+
 b_id = Id
 b_image = Image
+b_inactive = inaktiv
 
 b_keyword = Keyword
 
@@ -62,6 +65,7 @@ b_lists = Auflistung
 b_logout_from_backend = vom Backend abmelden.
 
 b_media = Media
+b_method = Methode
 b_module = Modul
 b_modules = Module
 
@@ -107,8 +111,34 @@ b_textile = Textile
 b_title = Titel
 
 b_url = Url
-b_url_generate_notice_id = Spalte der dazugehörigen eindeutigen Id
-b_url_generate_notice_name = Spalte aus der die Url erzeugt wird
+
+
+b_url_control_generate = Urls erzeugen
+b_url_control_generate_title = Urls erzeugen
+
+b_url_control_generate_notice_id = Spalte der dazugehörigen eindeutigen Id
+b_url_control_generate_notice_name = Spalte aus der die Url erzeugt wird
+
+b_url_control_manager = Urls verwalten
+b_url_control_manager_title = Urls verwalten
+
+b_url_control_manager_action = Was soll passieren?
+b_url_control_manager_action_view = Artikel unter aufgerufene Url anzeigen
+b_url_control_manager_action_redirect = weiterleiten
+b_url_control_manager_http_type = Statuscode
+b_url_control_manager_http_type_301 = 301 - Moved Permanently
+b_url_control_manager_http_type_303 = 303 - See Other
+b_url_control_manager_http_type_307 = 307 - Temporary Redirect
+b_url_control_manager_http_type_notice = <b>301 - Moved Permanently</b><br /> - dauerhafte Weiterleitung, alte Url existiert nicht mehr<br /><br /><b>303 - See Other</b><br /> - normale Weiterleitung<br /><br /><b>307 - Temporary Redirect</b><br /> - vorübergehende Weiterleitung, in Zukunft kann der Inhalt unter der aufgerufenen Url wieder zu finden sein
+b_url_control_manager_legend_1 = Redaxo Artikel
+b_url_control_manager_legend_2 = eigene Ziel Url
+b_url_control_manager_method = Parameter
+b_url_control_manager_own_url = Url
+b_url_control_manager_own_url_notice = Weiterleitung automatisch aktiv
+b_url_control_manager_requested_url = aufgerufene Url
+b_url_control_manager_requested_url_notice = alles nach der Domain <br /><br /><b>Url Beispiel</b><br />http://www.redaxo.de/eine/alte/url.html<br /><br /><b>Eingabe</b><br />/eine/alte/url.html
+b_url_control_manager_target = Ziel
+
 
 b_vat = Umsatzsteuer
 b_vat_calculator = Ust

@@ -12,6 +12,6 @@
 
 // Einstellungen ---------------------------------------------------------------
 $basedir = __DIR__;
-$myaddon = 'url_generate';
+$myaddon = 'url_control';
 
 $REX['ADDON']['install'][$myaddon] = 1;
