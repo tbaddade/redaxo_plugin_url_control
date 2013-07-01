@@ -39,7 +39,8 @@ class url_control
                 'CAT_ADDED',   'CAT_UPDATED',   'CAT_DELETED',
                 'ART_ADDED',   'ART_UPDATED',   'ART_DELETED',
                 'CLANG_ADDED', 'CLANG_UPDATED', 'CLANG_DELETED',
-                'ALL_GENERATED'
+                'ALL_GENERATED',
+                'XFORM_DATA_ADDED', 'XFORM_DATA_UPDATED'
             );
 
             foreach ($extension_points as $extension_point) {
@@ -61,13 +62,7 @@ class url_control
             $params = url_generate::getArticleParams();
         }
 
-        if ((int) $params['article_id'] > 0) {
-            $REX['ARTICLE_ID'] = $params['article_id'];
-            $REX['CUR_CLANG']  = $params['clang'];
-            return true;
-        } else {
-            return false;
-        }
+        return $params;
     }
 
 
@@ -94,7 +89,8 @@ class url_control
     {
         $url_path = urldecode($_SERVER['REQUEST_URI']);
         $url_path = ltrim($url_path, '/');
-        $url_path = $_SERVER['SERVER_NAME'] . '/' . $url_path;
+        //$url_path = $_SERVER['SERVER_NAME'] . '/' . $url_path;
+        $url_path = $_SERVER['HTTP_HOST'] . '/' . $url_path;
 
         // query löschen
         if (($pos = strpos($url_path, '?')) !== false) {
