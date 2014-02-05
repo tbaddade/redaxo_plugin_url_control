@@ -73,7 +73,7 @@ class url_control
     }
 
 
-    public static function extension_rewriter_rexseo42()
+    public static function extension_rewriter_seo42()
     {
         $params = url_generate::getArticleParams();
         return $params;

@@ -35,7 +35,7 @@ $rewriter = array(
         'extension_point'       => 'REXSEO_ARTICLE_ID_NOT_FOUND',
         'extension_function'    => 'extension_rewriter_seo42',
         'pages'                 => false,
-        'subpages'              => true,
+        'subpages'              => false,
     )
 );
 
@@ -76,13 +76,9 @@ if (isset($REX['USER']) && $REX['USER'] && ($REX['USER']->isAdmin() || $REX['USE
         }
     }
 
-	if ($REX['ADDON'][$myself]['addon'] == 'seo42') {
-       // do nothing. seo42 adds plugin by itself.
-    } else {
-        if ($rewriter[$addon]['subpages']) {
-            foreach ($mysubpages as $mysubpage) {
-                $REX['ADDON'][$addon]['SUBPAGES'][] = array($mysubpage, $I18N->msg('b_' . $mysubpage));
-            }
+    if ($rewriter[$addon]['subpages']) {
+        foreach ($mysubpages as $mysubpage) {
+            $REX['ADDON'][$addon]['SUBPAGES'][] = array($mysubpage, $I18N->msg('b_' . $mysubpage));
         }
     }
 
