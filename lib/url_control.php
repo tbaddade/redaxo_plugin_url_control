@@ -66,6 +66,18 @@ class url_control
     }
 
 
+    public static function extension_rewriter_seo42()
+    {
+        $params = url_generate::getArticleParams();
+        return $params;
+    }
+
+
+
+    /**
+     * Deprecated
+     * rexseo   - offene Entwicklung wurde eingestellt
+     */
     public static function extension_rewriter_rexseo()
     {
         $params = url_generate::getArticleParams();
@@ -73,6 +85,11 @@ class url_control
     }
 
 
+
+    /**
+     * Deprecated
+     * rexseo42 - umbenannt in seo42
+     */
     public static function extension_rewriter_rexseo42()
     {
         $params = url_generate::getArticleParams();

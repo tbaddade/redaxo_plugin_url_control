@@ -25,18 +25,34 @@ $rewriter = array(
         'subpages'              => false,
         'get_url'               => 'rex_yrewrite::getFullUrlByArticleId',
     ),
+    'seo42' => array(
+        'extension_point'       => 'REXSEO_ARTICLE_ID_NOT_FOUND',
+        'extension_function'    => 'extension_rewriter_seo42',
+        'pages'                 => false,
+        'subpages'              => true,
+    ),
+
+    /**
+     * Deprecated
+     * rexseo   - offene Entwicklung wurde eingestellt
+     */
     'rexseo' => array(
         'extension_point'       => 'REXSEO_ARTICLE_ID_NOT_FOUND',
         'extension_function'    => 'extension_rewriter_rexseo',
         'pages'                 => false,
         'subpages'              => true,
     ),
+
+    /**
+     * Deprecated
+     * rexseo42 - umbenannt in seo42
+     */
     'rexseo42' => array(
         'extension_point'       => 'REXSEO_ARTICLE_ID_NOT_FOUND',
         'extension_function'    => 'extension_rewriter_rexseo42',
         'pages'                 => false,
         'subpages'              => true,
-    )
+    ), 
 );
 
 
