@@ -56,7 +56,7 @@ if ($func == '') {
              $str .= " [";
              $str .= "<a href=\"index.php?article_id=".$list->getValue("article_id")."&amp;clang=".$list->getValue("clang")."\">Backend</a>";
              $str .= " | ";
-             $str .= "<a href=\"".rex_getUrl($list->getValue("article_id"), $list->getValue("clang"))."\">Frontend</a>";
+             $str .= "<a href=\"/". ltrim(rex_getUrl($list->getValue("article_id"), $list->getValue("clang")), "/")."\">Frontend</a>";
              $str .= "]";
              return $str;'
         )
