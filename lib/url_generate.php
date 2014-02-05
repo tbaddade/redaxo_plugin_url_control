@@ -90,8 +90,17 @@ class url_generate extends url_control
                     $s->setQuery($query);
                     if ($s->getRows() >= 1) {
                         $urls = $s->getArray();
+                        $save_names = array();
                         foreach ($urls as $url) {
+                            
+                            if (isset($save_name[ $url['name'] ])) {
+                                $url['name'] = $url['name'] . '-' . $url['id'];
+                            }
+
+
                             $paths[ $table ][ $article_id ][ $clang ][ $url['id'] ] = $path . strtolower(rex_parse_article_name($url['name'])) . '.html';
+
+                            $save_name[ $url['name'] ] = '';
                         }
                     }
 
