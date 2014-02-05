@@ -161,3 +161,5 @@ b_watson_legend_modules = Module
 b_watson_legend_synonym_for = Ist ein Synonym für {0}
 b_watson_legend_templates = Templates
 b_watson_legend_users = Benutzer
+
+seo42_url_control = Url Control
