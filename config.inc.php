@@ -31,11 +31,11 @@ $rewriter = array(
         'pages'                 => false,
         'subpages'              => true,
     ),
-    'rexseo42' => array(
+    'seo42' => array(
         'extension_point'       => 'REXSEO_ARTICLE_ID_NOT_FOUND',
-        'extension_function'    => 'extension_rewriter_rexseo42',
+        'extension_function'    => 'extension_rewriter_seo42',
         'pages'                 => false,
-        'subpages'              => true,
+        'subpages'              => false,
     )
 );
 

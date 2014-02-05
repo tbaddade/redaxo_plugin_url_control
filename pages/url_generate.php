@@ -189,10 +189,14 @@ if ($func == 'add' || $func == 'edit') {
 
 }
 
-require_once $REX['INCLUDE_PATH'] . '/layout/top.php';
-rex_title($addon . ' :: ' . $I18N->msg('b_url_control_generate_title'), $REX['ADDON']['pages'][$addon]);
-echo $echo;
-require_once $REX['INCLUDE_PATH'] . '/layout/bottom.php';
+if ($REX['ADDON'][$myself]['addon'] = 'seo42') {
+    echo $echo;
+} else {
+    require_once $REX['INCLUDE_PATH'] . '/layout/top.php';
+    rex_title($addon . ' :: ' . $I18N->msg('b_url_control_generate_title'), $REX['ADDON']['pages'][$addon]);
+    echo $echo;
+    require_once $REX['INCLUDE_PATH'] . '/layout/bottom.php';
+}
 
 ?>
 
