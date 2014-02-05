@@ -17,7 +17,11 @@ class url_generate extends url_control
     public static function init()
     {
         global $REX;
-        self::$path_file = $REX['INCLUDE_PATH'] . '/generated/files/url_control_generate_path_file.php';
+        if (!array_key_exists('GENERATED_PATH', $REX)) {
+            self::$path_file = $REX['INCLUDE_PATH'] . '/generated/files/url_control_generate_path_file.php';
+        } else {
+            self::$path_file = $REX['GENERATED_PATH'].'/files/url_control_generate_path_file.php';
+        }
         self::$paths     = self::getPaths();
 /*
         echo '<pre style="text-align: left">';
