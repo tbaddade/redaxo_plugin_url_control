@@ -14,7 +14,7 @@ class url_manager extends url_control
     {
         global $REX;
         // http://www.domain.de/kategorie/artikel.html
-        $url_full = parent::getFullUrl();
+        $url_full = parent::getFullRequestedUrl();
 
         // www.domain.de/kategorie/artikel.html
         $url_path = parent::getUrlPath();
