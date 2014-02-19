@@ -152,7 +152,6 @@ class url_generate extends url_control
                                 ' . $qyery_where . '
                                 ';
                     $s = rex_sql::factory();
-                    $s->debugsql = true;
                     $s->setQuery($query);
                     if ($s->getRows() >= 1) {
                         $urls = $s->getArray();
