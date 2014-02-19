@@ -28,11 +28,26 @@ class url_generate extends url_control
             self::$path_file = $REX['INCLUDE_PATH'] . '/generated/files/url_control_generate_path_file.php';
         }
         self::$paths     = self::getPaths();
-/*
-        echo '<pre style="text-align: left">';
-        print_r(self::$paths);
-        echo '</pre>';
-*/
+
+    }
+
+
+    public static function getRestrictionOperators()
+    {
+        return array(
+                     '='            => '=',
+                     '>'            => '>',
+                     '>='           => '>=',
+                     '<'            => '<',
+                     '<='           => '<=',
+                     '!='           => '!=',
+                     'LIKE'         => 'LIKE',
+                     'NOT LIKE'     => 'NOT LIKE',
+                     'IN (...)'     => 'IN (...)',
+                     'NOT IN (...)' => 'NOT IN (...)',
+                     'BETWEEN'      => 'BETWEEN',
+                     'NOT BETWEEN'  => 'NOT BETWEEN',
+                    );
     }
 
 
@@ -73,6 +88,7 @@ class url_generate extends url_control
                     } else {
                         $path = $a->getUrl();
                     }
+
                     $path = parent::getCleanPath($path);
 
                     $table          = $result['table'];
@@ -80,13 +96,63 @@ class url_generate extends url_control
 
                     $name = $table_params[$table][$table . '_name'];
                     $id   = $table_params[$table][$table . '_id'];
+                    
+                    $restriction_field    = $table_params[$table][$table . '_restriction_field'];
+                    $restriction_operator = $table_params[$table][$table . '_restriction_operator'];
+                    $restriction_value    = $table_params[$table][$table . '_restriction_value'];
+                    
+
+                    $qyery_where = '';
+                    if ($restriction_field != '' && $restriction_value != '' && in_array($restriction_operator, self::getRestrictionOperators())) {
+
+                        switch ($restriction_operator) {
+
+                            case 'IN (...)':
+                            case 'NOT IN (...)':
+
+                                $restriction_operator = str_replace(' (...)', '', $restriction_operator);
+
+                                $values = explode(',', $restriction_value);
+                                foreach ($values as $key => $value) {
+                                    if (! (int)$value > 0) {
+                                        unset($values[$key]);
+                                    }
+                                }
+                                $restriction_value = ' (' . implode(',', $values) . ') ';
+
+                                break;
+
+                            case 'BETWEEN':
+                            case 'NOT BETWEEN':
+
+                                $values = explode(',', $restriction_value);
+                                if (count($values) == 2) {
+                                    $restriction_value = $values[0] . ' AND ' . $values[1];
+                                }
+
+                                break;
+
+                            default:
+
+                                $restriction_value = '"' . mysql_real_escape_string($restriction_value) . '"';
+
+                                break;
+
+
+                        }
+
+                        $qyery_where = ' WHERE ' . $restriction_field . ' ' . $restriction_operator . ' ' . $restriction_value . '';
+
+                    }
 
 
                     $query = '  SELECT  ' . $name . '   AS name,
                                         ' . $id . '     AS id
                                 FROM    ' . $table . '
+                                ' . $qyery_where . '
                                 ';
                     $s = rex_sql::factory();
+                    $s->debugsql = true;
                     $s->setQuery($query);
                     if ($s->getRows() >= 1) {
                         $urls = $s->getArray();
@@ -121,7 +187,7 @@ class url_generate extends url_control
     {
         global $REX;
 
-        $url    = parent::getUrlPath();
+        $url    = parent::getUrlForComparisonWithPath();
         $paths  = self::$paths;
 
         foreach ($paths as $table => $article_ids) {
@@ -160,6 +226,8 @@ class url_generate extends url_control
 
             if ($table_name == $table) {
 
+                $return_ids = array();
+
                 foreach ($article_ids as $article_id => $clangs) {
 
                     if ($check) {
@@ -173,11 +241,12 @@ class url_generate extends url_control
                     } else {
                         foreach ($clangs as $clang => $ids) {
                             if ($REX['CUR_CLANG'] == $clang) {
-                                return $ids;
+                                $return_ids = $return_ids + $ids;
                             }
                         }
                     }
                 }
+                return $return_ids;
             }
         }
 
@@ -192,7 +261,7 @@ class url_generate extends url_control
      */
     public static function getId($table_name)
     {
-        $url = parent::getUrlPath();
+        $url = parent::getUrlForComparisonWithPath();
         $ids = self::getIds($table_name, true);
 
         if ($ids) {
@@ -222,8 +291,7 @@ class url_generate extends url_control
         if ($ids) {
             foreach ($ids as $id => $path) {
                 if ($primary_id == $id) {
-                    // alles vor dem ersten / (Slash) trimmen
-                    return substr($path, strpos($path, '/'));
+                    return parent::getCleanUrl($path);
                 }
             }
         }
@@ -242,8 +310,7 @@ class url_generate extends url_control
         if ($ids) {
             $save = array();
             foreach ($ids as $id => $path) {
-                // alles vor dem ersten / (Slash) trimmen
-                $save[$id] = substr($path, strpos($path, '/'));
+                $save[$id] = parent::getCleanUrl($path);
             }
             return $save;
         }

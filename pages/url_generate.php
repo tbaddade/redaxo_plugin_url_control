@@ -157,9 +157,9 @@ if ($func == 'add' || $func == 'edit') {
     if (count($fields > 0)) {
         foreach ($fields as $table => $columns) {
             $group      = $table;
-            $type       = 'select';
             $options    = $columns;
 
+            $type       = 'select';
             $name       = $table . '_name';
 
             $f1 = & $fieldContainer->addGroupedField($group, $type, $name, $value, $attributes = array());
@@ -172,6 +172,7 @@ if ($func == 'add' || $func == 'edit') {
 
 
 
+            $type       = 'select';
             $name       = $table . '_id';
 
             $f2 = & $fieldContainer->addGroupedField($group, $type, $name, $value, $attributes = array());
@@ -181,6 +182,41 @@ if ($func == 'add' || $func == 'edit') {
             $select = & $f2->getSelect();
             $select->setSize(1);
             $select->addOptions($options, true);
+
+            
+            $type       = 'select';
+            $name       = $table . '_restriction_field';
+
+            $f3 =& $fieldContainer->addGroupedField($group, $type, $name, $value, $attributes = array());
+            $f3->setHeader('<div class="url-control-grid3col">');
+
+            $f3->setLabel($I18N->msg('b_url_control_generate_restriction'));
+            $f3->setAttribute('style', 'width: 200px;');
+            $select =& $f3->getSelect();
+            $select->setSize(1);
+            $select->addOption('keine Einschränkung', '');
+            $select->addOptions($options, true);
+
+
+
+            $type       = 'select';
+            $name       = $table . '_restriction_operator';
+
+            $f4 =& $fieldContainer->addGroupedField($group, $type, $name, $value, $attributes = array());
+            //$f4->setLabel();
+            $f4->setAttribute('style', 'width: auto;');
+            $select =& $f4->getSelect();
+            $select->setSize(1);
+            $select->addOptions(url_generate::getRestrictionOperators());
+
+
+            $type       = 'text';
+            $name       = $table . '_restriction_value';
+            $value = '';
+
+            $f5 =& $fieldContainer->addGroupedField($group, $type, $name, $value, $attributes = array());
+            //$f5->setLabel();
+            $f5->setFooter('<div class="rex-form-row"><p><span class="rex-form-notice">' . $I18N->msg('b_url_control_generate_notice_restriction') . '</span></p></div></div>');
 
         }
     }
@@ -195,6 +231,29 @@ echo $echo;
 require_once $REX['INCLUDE_PATH'] . '/layout/bottom.php';
 
 ?>
+
+<style type="text/css">
+
+.url-control-grid3col {
+    clear: both;
+}
+body .rex-form .url-control-grid3col .rex-form-row {
+    clear: none;
+    float: left;
+    width: auto;
+    margin-right: 20px;
+}
+body .rex-form .url-control-grid3col .rex-form-row:last-child {
+}
+body .rex-form .url-control-grid3col .rex-form-row p {
+    float: none;
+    width: auto;
+}
+body .rex-form .url-control-grid3col .rex-form-row .rex-form-text input {
+    width: 200px;
+}
+
+</style>
 
 <script type="text/javascript">
 
