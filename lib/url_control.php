@@ -10,9 +10,14 @@
 
 class url_control
 {
+    protected static $rex_server;
 
     public static function init()
     {
+        global $REX;
+        
+        self::$rex_server = $REX['SERVER'];
+
         url_generate::init();
     }
 
@@ -56,7 +61,6 @@ class url_control
      */
     public static function extension_rewriter_yrewrite()
     {
-        global $REX;
         $params = url_manager::control();
         if (!$params) {
             $params = url_generate::getArticleParams();
@@ -73,11 +77,6 @@ class url_control
     }
 
 
-
-    /**
-     * Deprecated
-     * rexseo   - offene Entwicklung wurde eingestellt
-     */
     public static function extension_rewriter_rexseo()
     {
         $params = url_generate::getArticleParams();
@@ -98,32 +97,30 @@ class url_control
 
 
 
+
+
+    /**
+     * gibt eine saubere Url für Links zurück
+     * je nach Server entweder mit http:// oder absolut beginnend mit /
+     *
+    */
+    public static function getCleanUrl($url)
+    {
+        $server = rtrim(self::getServer(), '/');
+        return str_replace($server, '', $url);
+    }
+
     /**
      * gibt den Urlpfad zurück
      *
      */
-    public static function getUrlPath()
+    public static function getUrlForComparisonWithPath()
     {
-        $url_path = urldecode($_SERVER['REQUEST_URI']);
-        $url_path = ltrim($url_path, '/');
-        //$url_path = $_SERVER['SERVER_NAME'] . '/' . $url_path;
-        $url_path = $_SERVER['HTTP_HOST'] . '/' . $url_path;
-
-        // query löschen
-        if (($pos = strpos($url_path, '?')) !== false) {
-            $url_path = substr($url_path, 0, $pos);
-        }
-
-        // fragment löschen
-        if (($pos = strpos($url_path, '#')) !== false) {
-            $url_path = substr($url_path, 0, $pos);
-        }
-
-        return $url_path;
+        return self::getFullRequestedUrl();
     }
 
 
-    public static function getFullUrl()
+    public static function getFullRequestedUrl()
     {
         $s = empty($_SERVER['HTTPS']) ? '' : ($_SERVER['HTTPS'] == 'on') ? 's' : '';
         $protocol = substr(strtolower($_SERVER['SERVER_PROTOCOL']), 0, strpos(strtolower($_SERVER['SERVER_PROTOCOL']), '/')) . $s;
@@ -154,21 +151,19 @@ class url_control
 
         // html und Slashes am Anfang und Ende aus aktueller getUrl() löschen
         $path = trim(str_replace('.html', '', $path), '/') . '/';
+        //$path = str_replace('.html', '', $path) . '/';
 
         // kein Scheme vorhanden, dann setzen
         if (strpos($path, '://') === false) {
 
-            $server = trim($REX['SERVER'], '/');
-            if (strpos($server, '://') === false) {
-                $server = 'http://' . $server . '/';
-            }
+            $server = self::getServer();
 
             $path = $server . $path;
         }
 
         // nur Host und Path zurückgeben
-        $parse = parse_url($path);
-        $path  = $parse['host'] . $parse['path'];
+        // $parse = parse_url($path);
+        // $path  = $parse['host'] . $parse['path'];
 
         return $path;
     }
@@ -183,6 +178,12 @@ class url_control
     {
         global $REX;
         $server = trim($REX['SERVER'], '/') . '/';
+
+        // Speziell für yrewrite.
+        if (strpos($server, 'undefined') !== false) {
+            $server = self::$rex_server;
+        }
+
         if (strpos($server, '://') === false) {
             $scheme = 'http';
             if ($_SERVER['SERVER_PORT'] == 443) {
