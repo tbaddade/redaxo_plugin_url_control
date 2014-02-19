@@ -31,11 +31,6 @@ $rewriter = array(
         'pages'                 => false,
         'subpages'              => true,
     ),
-
-    /**
-     * Deprecated
-     * rexseo   - offene Entwicklung wurde eingestellt
-     */
     'rexseo' => array(
         'extension_point'       => 'REXSEO_ARTICLE_ID_NOT_FOUND',
         'extension_function'    => 'extension_rewriter_rexseo',
