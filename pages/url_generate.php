@@ -50,14 +50,18 @@ if ($func == '') {
             '$params',
             'global $I18N;
              $list = $params["list"];
-             $a = OOArticle::getArticleById($list->getValue("article_id"), $list->getValue("clang"));
+             
+             $str = "";
 
-             $str = $a->getValue("name");
-             $str .= " [";
-             $str .= "<a href=\"index.php?article_id=".$list->getValue("article_id")."&amp;clang=".$list->getValue("clang")."\">Backend</a>";
-             $str .= " | ";
-             $str .= "<a href=\"/". ltrim(rex_getUrl($list->getValue("article_id"), $list->getValue("clang")), "/")."\">Frontend</a>";
-             $str .= "]";
+             $a = OOArticle::getArticleById($list->getValue("article_id"), $list->getValue("clang"));
+             if ($a instanceof OOArticle) {
+                 $str = $a->getValue("name");
+                 $str .= " [";
+                 $str .= "<a href=\"index.php?article_id=".$list->getValue("article_id")."&amp;clang=".$list->getValue("clang")."\">Backend</a>";
+                 $str .= " | ";
+                 $str .= "<a href=\"/". ltrim(rex_getUrl($list->getValue("article_id"), $list->getValue("clang")), "/")."\">Frontend</a>";
+                 $str .= "]";
+             }
              return $str;'
         )
     );
