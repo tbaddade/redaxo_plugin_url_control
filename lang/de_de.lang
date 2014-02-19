@@ -3,14 +3,6 @@ navigation_developer = Developer
 b_install_redaxo_version_problem = Die REDAXO Version reicht nicht aus. Es wird mindestens Version {0} gebraucht. Sie nutzen aktuell die Version {1}.
 
 
-b_cheatsheet = Cheatsheet
-b_cheatsheet_title = Cheatsheet
-b_sherlock = Sherlock
-b_sherlock_title = Sherlock
-b_watson = Watson
-b_watson_title = Watson
-
-
 b_action = Aktion
 b_active = aktiv
 b_add = hinzufügen
@@ -115,9 +107,12 @@ b_url = Url
 
 b_url_control_generate = Urls erzeugen
 b_url_control_generate_title = Urls erzeugen
+b_url_control_generate_restriction = Einschränkung
 
 b_url_control_generate_notice_id = Spalte der dazugehörigen eindeutigen Id
 b_url_control_generate_notice_name = Spalte aus der die Url erzeugt wird
+b_url_control_generate_notice_restriction = Hiermit kann das erstellen der Urls für den obigen Artikel eingeschränkt werden. Hilfreich bei Relationen mit einer anderen Tabelle. News können zum Bsp. in mehrere Kategorien aufgeteilt werden.
+
 
 b_url_control_manager = Urls verwalten
 b_url_control_manager_title = Urls verwalten
@@ -138,26 +133,3 @@ b_url_control_manager_own_url_notice = Weiterleitung automatisch aktiv
 b_url_control_manager_requested_url = aufgerufene Url
 b_url_control_manager_requested_url_notice = alles nach der Domain <br /><br /><b>Url Beispiel</b><br />http://www.redaxo.de/eine/alte/url.html<br /><br /><b>Eingabe</b><br />/eine/alte/url.html
 b_url_control_manager_target = Ziel
-
-
-b_vat = Umsatzsteuer
-b_vat_calculator = Ust
-
-b_watson_legend_article_online = Online Artikel
-b_watson_legend_article_offline = Offline Artikel
-b_watson_legend_articles = Artikel
-b_watson_legend_calculator = Taschenrechner
-b_watson_legend_calculator_gross = errechnet den Bruttobetrag
-b_watson_legend_calculator_net = errechnet den Nettobetrag
-b_watson_legend_calculator_vat = errechnet die Umsatzsteuer
-b_watson_legend_command_home = zur Startseite im Frontend
-b_watson_legend_command_logout = REDAXO logout
-b_watson_legend_command_start = zur Startseite im Backend
-b_watson_legend_commands = Kommandos
-b_watson_legend_create_article_in_structure = Artikel in der Struktur anlegen
-b_watson_legend_create_category_in_structure = Kategorie in der Struktur anlegen
-b_watson_legend_media = Medien
-b_watson_legend_modules = Module
-b_watson_legend_synonym_for = Ist ein Synonym für {0}
-b_watson_legend_templates = Templates
-b_watson_legend_users = Benutzer
