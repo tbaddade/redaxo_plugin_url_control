@@ -57,12 +57,15 @@ if ($func == '') {
 
              } elseif ($list->getValue("method") == "article" && $params["article"]["article_id"] > 0) {
                 $a = OOArticle::getArticleById((int)$params["article"]["article_id"], $clang = (int)$params["article"]["clang"]);
-                $str = $a->getValue("name");
-                $str .= " [";
-                $str .= "<a href=\"index.php?article_id=" . $a->getId() . "&amp;clang=" . $a->getClang() . "\">Backend</a>";
-                $str .= " | ";
-                $str .= "<a href=\"" .  $a->getUrl() . "\">Frontend</a>";
-                $str .= "]";
+
+                if ($a instanceof OOArticle) {
+                    $str = $a->getValue("name");
+                    $str .= " [";
+                    $str .= "<a href=\"index.php?article_id=" . $a->getId() . "&amp;clang=" . $a->getClang() . "\">Backend</a>";
+                    $str .= " | ";
+                    $str .= "<a href=\"" .  $a->getUrl() . "\">Frontend</a>";
+                    $str .= "]";                    
+                }
 
              }
              return $str;
