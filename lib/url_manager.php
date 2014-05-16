@@ -13,6 +13,10 @@ class url_manager extends url_control
     public static function control()
     {
         global $REX;
+        $myself   = 'url_control';
+        $addon    = $REX['ADDON'][$myself]['addon'];
+        $rewriter = $REX['ADDON'][$myself]['rewriter'];
+
         // http://www.domain.de/kategorie/artikel.html
         $url_full = parent::getFullRequestedUrl();
 
@@ -20,7 +24,7 @@ class url_manager extends url_control
         $url_path  = $parse['path'];
 
         $sql = rex_sql::factory();
-        $sql->debugsql = true;
+        //$sql->debugsql = true;
         $sql->setQuery('SELECT  *
                         FROM    ' . $REX['TABLE_PREFIX'] . 'url_control_manager
                         WHERE   status = "1"
@@ -36,14 +40,29 @@ class url_manager extends url_control
             switch ($method) {
 
                 case 'article':
+
+                    $article_id = (int) $params['article']['article_id'];
+                    $clang      = (int) $params['article']['clang'];
+
                     if ($params['article']['action'] == 'view') {
                         return array(
-                            'article_id' => (int) $params['article']['article_id'],
-                            'clang'      => (int) $params['article']['clang'],
+                            'article_id' => $article_id,
+                            'clang'      => $clang,
                         );
                     } elseif ($params['article']['action'] == 'redirect') {
-                        $url = rex_getUrl((int) $params['article']['article_id'], (int) $params['article']['clang']);
-                        self::redirect($url, $params['http_type']['code']);
+
+                        $a = OOArticle::getArticleById((int) $params['article']['article_id'], (int) $params['article']['clang']);
+                        if ($a instanceof OOArticle) {
+
+                            if (isset($rewriter[$addon]['get_url'])) {
+                                $func = $rewriter[$addon]['get_url'];
+                                $url = call_user_func($func, $article_id, $clang);
+                            } else {
+                                $url = $a->getUrl();
+                            }
+                        }
+                        //$url = rex_getUrl((int) $params['article']['article_id'], (int) $params['article']['clang']);
+                        self::redirect($a->getUrl(), $params['http_type']['code']);
                     }
                     break;
 
@@ -53,6 +72,7 @@ class url_manager extends url_control
                     break;
             }
         }
+        return false;
     }
 
 

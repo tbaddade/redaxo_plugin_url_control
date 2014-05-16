@@ -72,14 +72,20 @@ class url_control
 
     public static function extension_rewriter_seo42()
     {
-        $params = url_generate::getArticleParams();
+        $params = url_manager::control();
+        if (!$params) {
+            $params = url_generate::getArticleParams();
+        }
         return $params;
     }
 
 
     public static function extension_rewriter_rexseo()
     {
-        $params = url_generate::getArticleParams();
+        $params = url_manager::control();
+        if (!$params) {
+            $params = url_generate::getArticleParams();
+        }
         return $params;
     }
 
