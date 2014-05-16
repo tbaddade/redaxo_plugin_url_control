@@ -16,13 +16,11 @@ class url_manager extends url_control
         // http://www.domain.de/kategorie/artikel.html
         $url_full = parent::getFullRequestedUrl();
 
-        // www.domain.de/kategorie/artikel.html
-        $url_path = parent::getUrlPath();
-        // /kategorie/artikel.html
-        $url_path = substr($url_path, strpos($url_path, '/'));
+        $parse = parse_url($url_full);
+        $url_path  = $parse['path'];
 
         $sql = rex_sql::factory();
-//        $sql->debugsql = true;
+        $sql->debugsql = true;
         $sql->setQuery('SELECT  *
                         FROM    ' . $REX['TABLE_PREFIX'] . 'url_control_manager
                         WHERE   status = "1"
