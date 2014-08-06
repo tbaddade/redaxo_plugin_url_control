@@ -104,10 +104,11 @@ b_title = Titel
 
 b_url = Url
 
+b_url_control_data = Daten
 
 b_url_control_generate = Urls erzeugen
 b_url_control_generate_title = Urls erzeugen
-b_url_control_generate_restriction = Einschränkung
+b_url_control_generate_restriction = Filter
 
 b_url_control_generate_notice_id = Spalte der dazugehörigen eindeutigen Id
 b_url_control_generate_notice_name = Spalte aus der die Url erzeugt wird
