@@ -94,8 +94,9 @@ class url_generate extends url_control
                     $table          = $result['table'];
                     $table_params   = unserialize($result['table_parameters']);
 
-                    $name = $table_params[$table][$table . '_name'];
-                    $id   = $table_params[$table][$table . '_id'];
+                    $name   = $table_params[$table][$table . '_name'];
+                    $name_2 = $table_params[$table][$table . '_name_2'];
+                    $id     = $table_params[$table][$table . '_id'];
                     
                     $restriction_field    = $table_params[$table][$table . '_restriction_field'];
                     $restriction_operator = $table_params[$table][$table . '_restriction_operator'];
@@ -145,9 +146,11 @@ class url_generate extends url_control
 
                     }
 
+                    $query_select = ($name_2 != '') ? ', ' . $name_2 . ' AS name_2' : '';
 
                     $query = '  SELECT  ' . $name . '   AS name,
                                         ' . $id . '     AS id
+                                        ' . $query_select . '
                                 FROM    ' . $table . '
                                 ' . $qyery_where . '
                                 ';
@@ -157,6 +160,10 @@ class url_generate extends url_control
                         $urls = $s->getArray();
                         $save_names = array();
                         foreach ($urls as $url) {
+
+                            if (isset($url['name_2']) && $url['name_2'] != '') {
+                                $url['name'] = $url['name'] . ' ' . $url['name_2'];
+                            }
                             
                             if (isset($save_names[ $url['name'] ])) {
                                 $url['name'] = $url['name'] . '-' . $url['id'];
@@ -285,7 +292,8 @@ class url_generate extends url_control
         }
 
 
-        $ids = self::getIds($table_name);
+        //$ids = self::getIds($table_name, true);
+        $ids = self::getIds($table_name, false);
 
         if ($ids) {
             foreach ($ids as $id => $path) {

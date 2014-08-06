@@ -68,7 +68,7 @@ if (!function_exists('url_generate_column_data')) {
 
         $return .= '<dl class="url-control-dl">';
         $return .= '<dt>' . $I18N->msg('b_table') . ': </dt><dd><code>' . $table . '</code></dd>';
-        $return .= '<dt>' . $I18N->msg('b_url') . ': </dt><dd><code>' . $params[ $table ][ $table . '_name'] . '</code></dd>';
+        $return .= '<dt>' . $I18N->msg('b_url') . ': </dt><dd><code>' . $params[ $table ][ $table . '_name'] . ' ' . $params[ $table ][ $table . '_name_2'] . '</code></dd>';
         $return .= '<dt>' . $I18N->msg('b_id') . ': </dt><dd><code>' . $params[ $table ][ $table . '_id'] . '</code></dd>';
         
 
@@ -197,11 +197,26 @@ if ($func == 'add' || $func == 'edit') {
             $name       = $table . '_name';
 
             $f1 = & $fieldContainer->addGroupedField($group, $type, $name, $value, $attributes = array());
+            $f1->setHeader('<div class="url-control-grid3col">');
+
             $f1->setLabel($I18N->msg('b_url'));
             $f1->setAttribute('style', 'width: 200px;');
             $f1->setNotice($I18N->msg('b_url_control_generate_notice_name'));
             $select = & $f1->getSelect();
             $select->setSize(1);
+            $select->addOptions($options, true);
+
+
+
+            $type       = 'select';
+            $name       = $table . '_name_2';
+
+            $f1 = & $fieldContainer->addGroupedField($group, $type, $name, $value, $attributes = array());
+            $f1->setFooter('</div>');
+            $f1->setAttribute('style', 'width: 200px;');
+            $select = & $f1->getSelect();
+            $select->setSize(1);
+            $select->addOption($I18N->msg('b_url_control_generate_no_additive'), '');
             $select->addOptions($options, true);
 
 
@@ -228,7 +243,7 @@ if ($func == 'add' || $func == 'edit') {
             $f3->setAttribute('style', 'width: 200px;');
             $select =& $f3->getSelect();
             $select->setSize(1);
-            $select->addOption('keine Einschränkung', '');
+            $select->addOption($I18N->msg('b_url_control_generate_no_filter'), '');
             $select->addOptions($options, true);
 
 
