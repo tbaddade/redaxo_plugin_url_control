@@ -18,6 +18,78 @@ $echo = '';
 
 rex_register_extension('REX_FORM_SAVED', 'url_generate::generatePathFile');
 
+if (!function_exists('url_generate_column_article')) {
+
+    function url_generate_column_article($params) {
+        
+        global $I18N;
+        $list = $params['list'];
+
+        $return = '';
+
+        $a = OOArticle::getArticleById($list->getValue("article_id"), $list->getValue("clang"));
+        if ($a instanceof OOArticle) {
+            $return = $a->getName();
+            $return .= ' [';
+            $return .= '<a href="index.php?article_id=' . $list->getValue('article_id') . '&amp;clang=' . $list->getValue('clang') . '">Backend</a>';
+            $return .= ' | ';
+            $return .= '<a href="' . rex_getUrl($list->getValue('article_id'), $list->getValue('clang')) . '">Frontend</a>';
+            $return .= ']';
+
+            $tree = $a->getParentTree();
+
+            $levels = array();
+            foreach ($tree as $object) {
+                $levels[] = $object->getName();
+            }
+
+            $return .= '<div class="url-control-path"><small><b>Pfad: </b>' . implode(' : ', $levels) . '</small></div>';
+
+        }
+
+        return $return;
+
+    }
+
+}
+
+if (!function_exists('url_generate_column_data')) {
+
+    function url_generate_column_data($params) {
+        
+        global $I18N;
+        $list = $params['list'];
+
+        $return = '';
+
+        $params = unserialize($list->getValue('table_parameters'));
+
+        $table = $list->getValue('table');
+
+        $return .= '<dl class="url-control-dl">';
+        $return .= '<dt>' . $I18N->msg('b_table') . ': </dt><dd><code>' . $table . '</code></dd>';
+        $return .= '<dt>' . $I18N->msg('b_url') . ': </dt><dd><code>' . $params[ $table ][ $table . '_name'] . '</code></dd>';
+        $return .= '<dt>' . $I18N->msg('b_id') . ': </dt><dd><code>' . $params[ $table ][ $table . '_id'] . '</code></dd>';
+        
+
+        $field      = $params[ $table ][ $table . '_restriction_field'];
+        $operator   = $params[ $table ][ $table . '_restriction_operator'];
+        $value      = $params[ $table ][ $table . '_restriction_value'];
+
+        if ($field != '') {
+
+            $return .= '<dt>' . $I18N->msg('b_url_control_generate_restriction') . ': </dt><dd><code>' . $field . $operator . $value . '</code></dd>';
+
+        }
+
+        $return .= '</dl>';
+
+        return $return;
+
+    }
+
+}
+
 if ($func == '') {
 
     $query = '  SELECT      `id`,
@@ -34,7 +106,7 @@ if ($func == '') {
     $list->setCaption($I18N->msg('b_tables'));
     $list->addTableAttribute('summary', $I18N->msg('b_tables'));
 
-    $list->addTableColumnGroup(array(40, '*', 150, 80, 80, '153'));
+    $list->addTableColumnGroup(array(40, '*', 200, 153));
 
     $header = '<a class="rex-i-element rex-i-generic-add" href="' . $list->getUrl(array('func' => 'add')) . '"><span class="rex-i-element-text">' . $I18N->msg('b_add_entry', $I18N->msg('b_table')) . '</span></a>';
     $list->addColumn($header, '###id###', 0, array('<th class="rex-icon">###VALUE###</th>', '<td class="rex-small">###VALUE###</td>'));
@@ -42,57 +114,15 @@ if ($func == '') {
     $list->removeColumn('id');
     $list->removeColumn('clang');
     $list->removeColumn('url');
+    $list->removeColumn('table');
     $list->removeColumn('table_parameters');
 
     $list->setColumnLabel('article_id', $I18N->msg('b_article'));
-    $list->setColumnFormat('article_id', 'custom',
-        create_function(
-            '$params',
-            'global $I18N;
-             $list = $params["list"];
-             
-             $str = "";
+    $list->setColumnFormat('article_id', 'custom', 'url_generate_column_article');
 
-             $a = OOArticle::getArticleById($list->getValue("article_id"), $list->getValue("clang"));
-             if ($a instanceof OOArticle) {
-                 $str = $a->getValue("name");
-                 $str .= " [";
-                 $str .= "<a href=\"index.php?article_id=".$list->getValue("article_id")."&amp;clang=".$list->getValue("clang")."\">Backend</a>";
-                 $str .= " | ";
-                 $str .= "<a href=\"/". ltrim(rex_getUrl($list->getValue("article_id"), $list->getValue("clang")), "/")."\">Frontend</a>";
-                 $str .= "]";
-             }
-             return $str;'
-        )
-    );
-
-    $list->setColumnLabel('table', $I18N->msg('b_table'));
-
-    $list->addColumn('url', '');
-    $list->setColumnLabel('url', $I18N->msg('b_url'));
-    $list->setColumnFormat('url', 'custom',
-        create_function(
-            '$params',
-            'global $I18N;
-             $list = $params["list"];
-
-             $params = unserialize($list->getValue("table_parameters"));
-             return $params[$list->getValue("table")][$list->getValue("table")."_name"];'
-        )
-    );
-
-    $list->addColumn('id', '');
-    $list->setColumnLabel('id', $I18N->msg('b_id'));
-    $list->setColumnFormat('id', 'custom',
-        create_function(
-            '$params',
-            'global $I18N;
-             $list = $params["list"];
-
-             $params = unserialize($list->getValue("table_parameters"));
-             return $params[$list->getValue("table")][$list->getValue("table")."_id"];'
-        )
-    );
+    $list->addColumn('data', '');
+    $list->setColumnLabel('data', $I18N->msg('b_url_control_data'));
+    $list->setColumnFormat('data', 'custom', 'url_generate_column_data');
 
     $list->addColumn($I18N->msg('b_function'), $I18N->msg('b_edit'));
     $list->setColumnParams($I18N->msg('b_function'), array('func' => 'edit', 'oid' => '###id###'));
@@ -238,8 +268,25 @@ require_once $REX['INCLUDE_PATH'] . '/layout/bottom.php';
 
 <style type="text/css">
 
+small {
+    font-size: 95%;
+}
 .url-control-grid3col {
     clear: both;
+}
+.url-control-path {
+    padding-top: 4px;
+}
+.url-control-dl dt {
+    clear: left;
+    float: left;
+    margin-bottom: 4px;
+    font-size: 95%;
+    font-weight: 700;
+}
+.url-control-dl dd {
+    margin-left: 45px;
+    margin-bottom: 4px;
 }
 body .rex-form .url-control-grid3col .rex-form-row {
     clear: none;
@@ -259,20 +306,27 @@ body .rex-form .url-control-grid3col .rex-form-row .rex-form-text input {
 
 </style>
 
-<script type="text/javascript">
+<?php
+if ($func == 'add' || $func == 'edit') {
+?>
+    <script type="text/javascript">
 
-    jQuery(document).ready(function($) {
+        jQuery(document).ready(function($) {
 
-        var $currentShown = null;
-        $("#<?php echo $table_id; ?>").change(function() {
-            if($currentShown) {
-                $currentShown.hide();
-            }
+            var $currentShown = null;
+            $("#<?php echo $table_id; ?>").change(function() {
+                if($currentShown) {
+                    $currentShown.hide();
+                }
 
-            var $table_id = "#rex-"+ jQuery(this).val();
-            $currentShown = $($table_id);
-            $currentShown.show();
-        }).change();
-    });
+                var $table_id = "#rex-"+ jQuery(this).val();
+                $currentShown = $($table_id);
+                $currentShown.show();
+            }).change();
+        });
 
-</script>
+    </script>
+<?php
+}
+?>
+
