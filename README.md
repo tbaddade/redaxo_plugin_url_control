@@ -33,7 +33,7 @@ $news_url = url_generate::getUrlById('news_table', $news_id);
 
 ```php
 <?php
-$id = url_generate::getId('rex_ofc_news');
+$id = url_generate::getId('news_table');
 
 if ($id > 0) {
 
@@ -46,15 +46,21 @@ if ($id > 0) {
 		echo $data['title'];
 
 	}
+	
 } else {
 
     $datas = rex_sql::factory()->getArray('SELECT * FROM news_table');
 
     if (count($datas) > 0) {
+	
     	foreach ($datas as $data) {
+	
 			echo '<a href="' . url_generate::getUrlById('news_table', $data['id']) . '">' . $data['title'] . '</a>';
+			
 		}
+		
 	}
+	
 }
 ?>
 ```
