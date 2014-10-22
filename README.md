@@ -77,4 +77,4 @@ unterstützte Rewriter
 --------------------------------------------------------------------------------
 * [yrewriter](https://github.com/dergel/redaxo4_yrewrite) von dergel (Jan Kristinus)
 * [rexseo](https://github.com/gn2netwerk/rexseo) von GN2 Netwerk und jdlx
-* [rexseo42](https://github.com/rexdude/rexseo42) von RexDude
+* [seo42](https://github.com/RexDude/seo42) von RexDude
