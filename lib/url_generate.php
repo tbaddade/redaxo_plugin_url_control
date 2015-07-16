@@ -175,6 +175,7 @@ class url_generate extends url_control
                                 $urlEnding = '.html';
                             }
 
+
                             $paths[ $table ][ $article_id ][ $clang ][ $url['id'] ] = $path . strtolower(rex_parse_article_name($url['name'])) . $urlEnding;
 
                             $save_names[ $url['name'] ] = '';

@@ -26,7 +26,7 @@ $rewriter = array(
         'get_url'               => 'rex_yrewrite::getFullUrlByArticleId',
     ),
     'seo42' => array(
-        'extension_point'       => 'REXSEO_ARTICLE_ID_NOT_FOUND',
+        'extension_point'       => 'SEO42_ARTICLE_ID_NOT_FOUND',
         'extension_function'    => 'extension_rewriter_seo42',
         'pages'                 => false,
         'subpages'              => true,
