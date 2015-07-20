@@ -27,13 +27,13 @@ if ($func == '') {
 
     $list = rex_list::factory($query, 30, 'url_control_manager');
 //    $list->debug = true;
-    $list->setNoRowsMessage($I18N->msg('b_no_results'));
-    $list->setCaption($I18N->msg('b_tables'));
-    $list->addTableAttribute('summary', $I18N->msg('b_tables'));
+    $list->setNoRowsMessage($I18N->msg('url_control_no_results'));
+    $list->setCaption($I18N->msg('url_control_tables'));
+    $list->addTableAttribute('summary', $I18N->msg('url_control_tables'));
 
     //$list->addTableColumnGroup(array(40, '*', 150, 80, 80, '153'));
 
-    $header = '<a class="rex-i-element rex-i-generic-add" href="' . $list->getUrl(array('func' => 'add')) . '"><span class="rex-i-element-text">' . $I18N->msg('b_add_entry', $I18N->msg('b_table')) . '</span></a>';
+    $header = '<a class="rex-i-element rex-i-generic-add" href="' . $list->getUrl(array('func' => 'add')) . '"><span class="rex-i-element-text">' . $I18N->msg('url_control_add_entry', $I18N->msg('url_control_table')) . '</span></a>';
     $list->addColumn($header, '###id###', 0, array('<th class="rex-icon">###VALUE###</th>', '<td class="rex-small">###VALUE###</td>'));
 
     $list->removeColumn('id');
@@ -41,10 +41,10 @@ if ($func == '') {
     $list->removeColumn('method');
     $list->removeColumn('method_parameters');
 
-    $list->setColumnLabel('url', $I18N->msg('b_url_control_manager_requested_url'));
+    $list->setColumnLabel('url', $I18N->msg('url_control_manager_requested_url'));
 
     $list->addColumn('target', '');
-    $list->setColumnLabel('target', $I18N->msg('b_url_control_manager_target'));
+    $list->setColumnLabel('target', $I18N->msg('url_control_manager_target'));
     $list->setColumnFormat('target', 'custom',
         create_function(
             '$params',
@@ -74,7 +74,7 @@ if ($func == '') {
     );
 
     $list->addColumn('action', '');
-    $list->setColumnLabel('action', $I18N->msg('b_action'));
+    $list->setColumnLabel('action', $I18N->msg('url_control_action'));
     $list->setColumnFormat('action', 'custom',
         create_function(
             '$params',
@@ -82,9 +82,9 @@ if ($func == '') {
              $list = $params["list"];
              $params = unserialize($list->getValue("method_parameters"));
 
-             $str = $I18N->msg("b_url_control_manager_action_redirect") . " :: " . $I18N->msg("b_url_control_manager_http_type_" .  $params["http_type"]["code"]);
+             $str = $I18N->msg("url_control_manager_action_redirect") . " :: " . $I18N->msg("url_control_manager_http_type_" .  $params["http_type"]["code"]);
              if ($list->getValue("method") == "article" && $params["article"]["action"] == "view") {
-                $str = $I18N->msg("b_url_control_manager_action_view");
+                $str = $I18N->msg("url_control_manager_action_view");
              }
              return $str;
              '
@@ -93,7 +93,7 @@ if ($func == '') {
 
 
     $list->addColumn('status', '');
-    $list->setColumnLabel('status', $I18N->msg('b_function'));
+    $list->setColumnLabel('status', $I18N->msg('url_control_function'));
     $list->setColumnParams('status', array('func' => 'status', 'oid' => '###id###'));
     $list->setColumnLayout('status', array('<th colspan="2">###VALUE###</th>', '<td style="text-align:center;">###VALUE###</td>'));
     $list->setColumnFormat('status', 'custom',
@@ -102,15 +102,15 @@ if ($func == '') {
             'global $I18N;
              $list = $params["list"];
              if ($list->getValue("status") == 1)
-               $str = "<span class=\"rex-online\">".$I18N->msg("b_active")."</span>";
+               $str = "<span class=\"rex-online\">".$I18N->msg("url_control_active")."</span>";
              else
-               $str = "<span class=\"rex-offline\">".$I18N->msg("b_inactive")."</span>";
+               $str = "<span class=\"rex-offline\">".$I18N->msg("url_control_inactive")."</span>";
              return $str;'
         )
     );
 
-    $list->addColumn($I18N->msg('b_function'), $I18N->msg('b_edit'), -1, array('', '<td style="text-align:center;">###VALUE###</td>'));
-    $list->setColumnParams($I18N->msg('b_function'), array('func' => 'edit', 'oid' => '###id###'));
+    $list->addColumn($I18N->msg('url_control_function'), $I18N->msg('url_control_edit'), -1, array('', '<td style="text-align:center;">###VALUE###</td>'));
+    $list->setColumnParams($I18N->msg('url_control_function'), array('func' => 'edit', 'oid' => '###id###'));
 
     $echo = $list->get();
 
@@ -119,9 +119,9 @@ if ($func == '') {
 
 if ($func == 'add' || $func == 'edit') {
 
-    $legend = $func == 'edit' ? $I18N->msg('b_edit') : $I18N->msg('b_add');
+    $legend = $func == 'edit' ? $I18N->msg('url_control_edit') : $I18N->msg('url_control_add');
 
-    $form = new rex_form($REX['TABLE_PREFIX'] . 'url_control_manager', $I18N->msg('b_url') . ' ' . $legend, 'id=' . $oid, 'post', false);
+    $form = new rex_form($REX['TABLE_PREFIX'] . 'url_control_manager', $I18N->msg('url_control_url') . ' ' . $legend, 'id=' . $oid, 'post', false);
     //$form->debug = true;
 
     if ($func == 'edit') {
@@ -130,27 +130,27 @@ if ($func == 'add' || $func == 'edit') {
 
 
     $field = & $form->addSelectField('status');
-    $field->setLabel($I18N->msg('b_status'));
+    $field->setLabel($I18N->msg('url_control_status'));
     $select = & $field->getSelect();
     $select->setSize(1);
-    $select->addOption($I18N->msg('b_active'), '1');
-    $select->addOption($I18N->msg('b_inactive'), '0');
+    $select->addOption($I18N->msg('url_control_active'), '1');
+    $select->addOption($I18N->msg('url_control_inactive'), '0');
 
     $field = & $form->addTextField('url');
-    $field->setLabel($I18N->msg('b_url_control_manager_requested_url'));
-    $field->setNotice($I18N->msg('b_url_control_manager_requested_url_notice'));
+    $field->setLabel($I18N->msg('url_control_manager_requested_url'));
+    $field->setNotice($I18N->msg('url_control_manager_requested_url_notice'));
 
 
     $field = & $form->addSelectField('method');
-    $field->setLabel($I18N->msg('b_method'));
+    $field->setLabel($I18N->msg('url_control_method'));
     $select_method_id = $field->getAttribute('id');
     $select = & $field->getSelect();
     $select->setSize(1);
-    $select->addOption($I18N->msg('b_url_control_manager_legend_1'), 'article');
-    $select->addOption($I18N->msg('b_url_control_manager_legend_2'), 'target_url');
+    $select->addOption($I18N->msg('url_control_manager_legend_1'), 'article');
+    $select->addOption($I18N->msg('url_control_manager_legend_2'), 'target_url');
 
 
-    $form->addFieldset($I18N->msg('b_url_control_manager_method'));
+    $form->addFieldset($I18N->msg('url_control_manager_method'));
 
 
     $fieldContainer = & $form->addContainerField('method_parameters');
@@ -163,7 +163,7 @@ if ($func == 'add' || $func == 'edit') {
     $name  = 'article_id';
     $value = '';
     $field = & $fieldContainer->addGroupedField($group, $type, $name, $value, $attributes = array());
-    $field->setLabel($I18N->msg('b_article'));
+    $field->setLabel($I18N->msg('url_control_article'));
 
 
     if (count($REX['CLANG']) >= 2) {
@@ -171,7 +171,7 @@ if ($func == 'add' || $func == 'edit') {
         $name  = 'clang';
         $value = '';
         $field = & $fieldContainer->addGroupedField($group, $type, $name, $value, $attributes = array());
-        $field->setLabel($I18N->msg('b_language'));
+        $field->setLabel($I18N->msg('url_control_language'));
         $field->setAttribute('style', 'width: 200px;');
         $clang_id = $field->getAttribute('id');
         $select = & $field->getSelect();
@@ -192,12 +192,12 @@ if ($func == 'add' || $func == 'edit') {
     $name  = 'action';
     $value = '';
     $field = & $fieldContainer->addGroupedField($group, $type, $name, $value, $attributes = array());
-    $field->setLabel($I18N->msg('b_url_control_manager_action'));
+    $field->setLabel($I18N->msg('url_control_manager_action'));
     $http_type_id_a = $field->getAttribute('id');
     $select = & $field->getSelect();
     $select->setSize(1);
-    $select->addOption($I18N->msg('b_url_control_manager_action_view'), 'view');
-    $select->addOption($I18N->msg('b_url_control_manager_action_redirect'), 'redirect');
+    $select->addOption($I18N->msg('url_control_manager_action_view'), 'view');
+    $select->addOption($I18N->msg('url_control_manager_action_redirect'), 'redirect');
 
 
     // Group -------------------------------------------------------------------
@@ -207,8 +207,8 @@ if ($func == 'add' || $func == 'edit') {
     $name  = 'url';
     $value = '';
     $field = & $fieldContainer->addGroupedField($group, $type, $name, $value, $attributes = array());
-    $field->setLabel($I18N->msg('b_url_control_manager_own_url'));
-    $field->setNotice($I18N->msg('b_url_control_manager_own_url_notice'));
+    $field->setLabel($I18N->msg('url_control_manager_own_url'));
+    $field->setNotice($I18N->msg('url_control_manager_own_url_notice'));
     $http_type_id_b = $field->getAttribute('id');
 
 
@@ -220,22 +220,19 @@ if ($func == 'add' || $func == 'edit') {
     $name  = 'code';
     $value = '';
     $field = & $fieldContainer->addGroupedField($group, $type, $name, $value, $attributes = array());
-    $field->setLabel($I18N->msg('b_url_control_manager_http_type'));
-    $field->setNotice($I18N->msg('b_url_control_manager_http_type_notice'));
+    $field->setLabel($I18N->msg('url_control_manager_http_type'));
+    $field->setNotice($I18N->msg('url_control_manager_http_type_notice'));
     $select = & $field->getSelect();
     $select->setSize(1);
-    $select->addOption($I18N->msg('b_url_control_manager_http_type_301'), '301');
-    $select->addOption($I18N->msg('b_url_control_manager_http_type_303'), '303');
-    $select->addOption($I18N->msg('b_url_control_manager_http_type_307'), '307');
+    $select->addOption($I18N->msg('url_control_manager_http_type_301'), '301');
+    $select->addOption($I18N->msg('url_control_manager_http_type_303'), '303');
+    $select->addOption($I18N->msg('url_control_manager_http_type_307'), '307');
 
     $echo = $form->get();
 
 }
 
-require_once $REX['INCLUDE_PATH'] . '/layout/top.php';
-rex_title($addon . ' :: ' . $I18N->msg('b_url_control_manager_title'), $REX['ADDON']['pages'][$addon]);
 echo $echo;
-require_once $REX['INCLUDE_PATH'] . '/layout/bottom.php';
 
 ?>
 

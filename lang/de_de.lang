@@ -1,140 +1,166 @@
-navigation_developer = Developer
-
-b_install_redaxo_version_problem = Die REDAXO Version reicht nicht aus. Es wird mindestens Version {0} gebraucht. Sie nutzen aktuell die Version {1}.
 
 
-b_action = Aktion
-b_active = aktiv
-b_add = hinzufügen
-b_add_entry = {0} hinzufügen
-b_article = Artikel
-b_articles = Artikel
+url_control = Url Control
+url_control_title = Url Control
 
-b_blocks = Blöcke
+url_control_url_generate = Urls generieren
+url_control_url_generate_title = Urls generieren
 
-b_cache_file_was_written = Cache Datei "{0}" wurde geschrieben.
-b_cache_file_was_not_written = Cache Datei "{0}" konnte nicht geschrieben werden.
-b_color = Color
-b_color_notice = Bspl. #f90 oder #ff9900
-b_column = Spalte
-b_columns = Spalten
-b_column_amount = {0} Spalte
-b_columns_amount = {0} Spalten
-b_create_article = Artikel "{0}" anlegen
-b_create_category = Kategorie "{0}" anlegen
-b_create_media = Medium"{0}" anlegen
-b_create_module = Modul "{0}" anlegen
-b_create_template = Template "{0}" anlegen
-b_create_user = Benutzer "{0}" anlegen
-
-b_description = Beschreibung
-
-b_edit = editieren
-b_edit_blocks = Blöcke bearbeiten
-b_edit_contents = Inhalte bearbeiten
-b_extension_point = Extension Point
-b_extension_points = Extension Points
-
-b_file = Datei
-b_found_extension_points = gefundene Extension Points: {0}
-b_function = Funktion
-
-b_go_to_backend_startarticle = Gehe zum Startartikel im Backend
-b_go_to_frontend = Gehe zum Frontend/Website
-b_gross = Brutto
-
-b_http_type = Http Typ
-
-b_id = Id
-b_image = Image
-b_inactive = inaktiv
-
-b_keyword = Keyword
-
-b_language = Sprache
-b_layout = Layout
-b_lists = Auflistung
-b_logout_from_backend = vom Backend abmelden.
-
-b_media = Media
-b_method = Methode
-b_module = Modul
-b_modules = Module
-
-b_name = Name
-b_net = Netto
-b_no_cheatsheets = keine Cheatsheets vorhanden
-b_no_blocks = keine Blöcke vorhanden
-b_no_contents = keine Inhalte vorhanden
-b_no_results = keine Ergebnisse
-b_no_table_selected = keine Tabelle ausgewählt
-b_note = Notiz
-
-b_offline = offline
-b_online = online
-b_open_article_in_backend = Öffnet den Artikel im Backend
-b_open_media = Medium öffnen
-b_open_media_in_mediapool = Medium im Medienpool öffnen
-b_open_module = Modul öffnen
-b_open_template = Template öffnen
-
-b_param = Parameter
-b_params = Parameter
-b_parse_files = Dateien analysieren
-b_parsed_files = Dateien analysiert: {0}
-b_percent_of = von
-b_plain = Plain
-b_prior = Prior
-
-b_readonly = Readonly
-b_rex_vars = REX Variablen
-
-b_search = suchen
-b_standard_tax = 19
-b_status = Status
-b_subject = Subject
-
-b_table = Tabelle
-b_tables = Tabellen
-b_template = Template
-b_templates = Templates
-b_text = Text
-b_textile = Textile
-b_title = Titel
-
-b_url = Url
-
-b_url_control_data = Daten
+url_control_url_manager = Urls verwalten
+url_control_url_manager_title = Urls verwalten
 
 
-b_url_control_generate = Urls erzeugen
-b_url_control_generate_title = Urls erzeugen
-b_url_control_generate_restriction = Filter
+url_control_action = Aktion
+url_control_active = aktiv
+url_control_add = hinzufügen
+url_control_article = Artikel
 
-b_url_control_generate_notice_id = Spalte der dazugehörigen eindeutigen Id
-b_url_control_generate_notice_name = Spalten aus der die Url erzeugt wird
-b_url_control_generate_notice_restriction = Hiermit kann das erstellen der Urls für den obigen Artikel eingeschränkt werden. Hilfreich bei Relationen mit einer anderen Tabelle. News können zum Bsp. in mehrere Kategorien aufgeteilt werden.
+url_control_data = Daten
 
-b_url_control_generate_no_additive = kein Zusatz
-b_url_control_generate_no_filter = keinen Filter
+url_control_edit = editieren
+
+url_control_function = Funktion
+
+url_control_generate_no_additive = kein Zusatz
+url_control_generate_no_filter = keinen Filter
+url_control_generate_notice_id = Spalte der dazugehörigen eindeutigen Id
+url_control_generate_notice_name = Spalten aus der die Url erzeugt wird
+url_control_generate_notice_restriction = Hiermit kann das erstellen der Urls für den obigen Artikel eingeschränkt werden. Hilfreich bei Relationen mit einer anderen Tabelle. News können zum Bsp. in mehrere Kategorien aufgeteilt werden.
+url_control_generate_restriction = Filter
+
+url_control_id = Id
+url_control_inactive = inaktiv
+
+url_control_language = Sprache
 
 
-b_url_control_manager = Urls verwalten
-b_url_control_manager_title = Urls verwalten
+url_control_manager_action = Was soll passieren?
+url_control_manager_action_view = Artikel unter aufgerufene Url anzeigen
+url_control_manager_action_redirect = weiterleiten
+url_control_manager_http_type = Statuscode
+url_control_manager_http_type_301 = 301 - Moved Permanently
+url_control_manager_http_type_303 = 303 - See Other
+url_control_manager_http_type_307 = 307 - Temporary Redirect
+url_control_manager_http_type_notice = <b>301 - Moved Permanently</b><br /> - dauerhafte Weiterleitung, alte Url existiert nicht mehr<br /><br /><b>303 - See Other</b><br /> - normale Weiterleitung<br /><br /><b>307 - Temporary Redirect</b><br /> - vorübergehende Weiterleitung, in Zukunft kann der Inhalt unter der aufgerufenen Url wieder zu finden sein
+url_control_manager_legend_1 = Redaxo Artikel
+url_control_manager_legend_2 = eigene Ziel Url
+url_control_manager_method = Parameter
+url_control_manager_own_url = Url
+url_control_manager_own_url_notice = Weiterleitung automatisch aktiv
+url_control_manager_requested_url = aufgerufene Url
+url_control_manager_requested_url_notice = alles nach der Domain <br /><br /><b>Url Beispiel</b><br />http://www.redaxo.de/eine/alte/url.html<br /><br /><b>Eingabe</b><br />/eine/alte/url.html
+url_control_manager_target = Ziel
 
-b_url_control_manager_action = Was soll passieren?
-b_url_control_manager_action_view = Artikel unter aufgerufene Url anzeigen
-b_url_control_manager_action_redirect = weiterleiten
-b_url_control_manager_http_type = Statuscode
-b_url_control_manager_http_type_301 = 301 - Moved Permanently
-b_url_control_manager_http_type_303 = 303 - See Other
-b_url_control_manager_http_type_307 = 307 - Temporary Redirect
-b_url_control_manager_http_type_notice = <b>301 - Moved Permanently</b><br /> - dauerhafte Weiterleitung, alte Url existiert nicht mehr<br /><br /><b>303 - See Other</b><br /> - normale Weiterleitung<br /><br /><b>307 - Temporary Redirect</b><br /> - vorübergehende Weiterleitung, in Zukunft kann der Inhalt unter der aufgerufenen Url wieder zu finden sein
-b_url_control_manager_legend_1 = Redaxo Artikel
-b_url_control_manager_legend_2 = eigene Ziel Url
-b_url_control_manager_method = Parameter
-b_url_control_manager_own_url = Url
-b_url_control_manager_own_url_notice = Weiterleitung automatisch aktiv
-b_url_control_manager_requested_url = aufgerufene Url
-b_url_control_manager_requested_url_notice = alles nach der Domain <br /><br /><b>Url Beispiel</b><br />http://www.redaxo.de/eine/alte/url.html<br /><br /><b>Eingabe</b><br />/eine/alte/url.html
-b_url_control_manager_target = Ziel
+url_control_method = Methode
+
+
+url_control_no_results = keine Ergebnisse
+url_control_no_table_selected = keine Tabelle ausgewählt
+
+url_control_status = Status
+
+url_control_table = Tabelle
+url_control_tables = Tabellen
+
+url_control_url = Url
+
+
+
+
+
+    b_add_entry = {0} hinzufügen
+    b_articles = Artikel
+
+    b_blocks = Blöcke
+
+    b_cache_file_was_written = Cache Datei "{0}" wurde geschrieben.
+    b_cache_file_was_not_written = Cache Datei "{0}" konnte nicht geschrieben werden.
+    b_color = Color
+    b_color_notice = Bspl. #f90 oder #ff9900
+    b_column = Spalte
+    b_columns = Spalten
+    b_column_amount = {0} Spalte
+    b_columns_amount = {0} Spalten
+    b_create_article = Artikel "{0}" anlegen
+    b_create_category = Kategorie "{0}" anlegen
+    b_create_media = Medium"{0}" anlegen
+    b_create_module = Modul "{0}" anlegen
+    b_create_template = Template "{0}" anlegen
+    b_create_user = Benutzer "{0}" anlegen
+
+    b_description = Beschreibung
+
+    b_edit_blocks = Blöcke bearbeiten
+    b_edit_contents = Inhalte bearbeiten
+    b_extension_point = Extension Point
+    b_extension_points = Extension Points
+
+    b_file = Datei
+    b_found_extension_points = gefundene Extension Points: {0}
+
+    b_go_to_backend_startarticle = Gehe zum Startartikel im Backend
+    b_go_to_frontend = Gehe zum Frontend/Website
+    b_gross = Brutto
+
+    b_http_type = Http Typ
+
+    b_image = Image
+
+    b_keyword = Keyword
+
+    b_layout = Layout
+    b_lists = Auflistung
+    b_logout_from_backend = vom Backend abmelden.
+
+    b_media = Media
+    b_module = Modul
+    b_modules = Module
+
+    b_name = Name
+    b_net = Netto
+    b_no_cheatsheets = keine Cheatsheets vorhanden
+    b_no_blocks = keine Blöcke vorhanden
+    b_no_contents = keine Inhalte vorhanden
+    b_note = Notiz
+
+    b_offline = offline
+    b_online = online
+    b_open_article_in_backend = Öffnet den Artikel im Backend
+    b_open_media = Medium öffnen
+    b_open_media_in_mediapool = Medium im Medienpool öffnen
+    b_open_module = Modul öffnen
+    b_open_template = Template öffnen
+
+    b_param = Parameter
+    b_params = Parameter
+    b_parse_files = Dateien analysieren
+    b_parsed_files = Dateien analysiert: {0}
+    b_percent_of = von
+    b_plain = Plain
+    b_prior = Prior
+
+    b_readonly = Readonly
+    b_rex_vars = REX Variablen
+
+    b_search = suchen
+    b_standard_tax = 19
+    b_subject = Subject
+
+    b_template = Template
+    b_templates = Templates
+    b_text = Text
+    b_textile = Textile
+    b_title = Titel
+
+
+
+
+
+
+
+
+
+
+
+
+

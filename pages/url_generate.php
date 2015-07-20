@@ -10,37 +10,45 @@
  */
 
 $myself = 'url_control';
-$addon  = $REX['ADDON'][$myself]['addon'];
+$addon  = $REX['ADDON'][$myself]['rewriter']['addon_name'];
 
 $oid  = rex_request('oid', 'int');
 $func = rex_request('func', 'string');
 $echo = '';
 
-rex_register_extension('REX_FORM_SAVED', 'url_generate::generatePathFile');
+//echo '<h1>' . rex_yrewrite::getFullUrlByArticleId(2) . '</h1>';
 
 if (!function_exists('url_generate_column_article')) {
 
     function url_generate_column_article($params) {
         
-        global $I18N;
+        global $REX, $I18N;
         $list = $params['list'];
 
         $return = '';
 
-        $a = OOArticle::getArticleById($list->getValue("article_id"), $list->getValue("clang"));
+        $a = OOArticle::getArticleById($list->getValue('article_id'), $list->getValue('clang'));
         if ($a instanceof OOArticle) {
             $return = $a->getName();
             $return .= ' [';
             $return .= '<a href="index.php?article_id=' . $list->getValue('article_id') . '&amp;clang=' . $list->getValue('clang') . '">Backend</a>';
             $return .= ' | ';
-            $return .= '<a href="' . rex_getUrl($list->getValue('article_id'), $list->getValue('clang')) . '">Frontend</a>';
+            $return .= '<a href="/' . ltrim( rex_getUrl($list->getValue('article_id'), $list->getValue('clang')) , '/') . '">Frontend</a>';
             $return .= ']';
 
             $tree = $a->getParentTree();
 
             $levels = array();
+            if (count($REX['CLANG']) >= 2 && isset($REX['CLANG'][$list->getValue('clang')])) {
+                
+                $levels[] = $REX['CLANG'][$list->getValue('clang')];
+
+            }
+
             foreach ($tree as $object) {
+
                 $levels[] = $object->getName();
+
             }
 
             $return .= '<div class="url-control-path"><small><b>Pfad: </b>' . implode(' : ', $levels) . '</small></div>';
@@ -67,9 +75,9 @@ if (!function_exists('url_generate_column_data')) {
         $table = $list->getValue('table');
 
         $return .= '<dl class="url-control-dl">';
-        $return .= '<dt>' . $I18N->msg('b_table') . ': </dt><dd><code>' . $table . '</code></dd>';
-        $return .= '<dt>' . $I18N->msg('b_url') . ': </dt><dd><code>' . $params[ $table ][ $table . '_name'] . ' ' . $params[ $table ][ $table . '_name_2'] . '</code></dd>';
-        $return .= '<dt>' . $I18N->msg('b_id') . ': </dt><dd><code>' . $params[ $table ][ $table . '_id'] . '</code></dd>';
+        $return .= '<dt>' . $I18N->msg('url_control_table') . ': </dt><dd><code>' . $table . '</code></dd>';
+        $return .= '<dt>' . $I18N->msg('url_control_url') . ': </dt><dd><code>' . $params[ $table ][ $table . '_name'] . ' ' . $params[ $table ][ $table . '_name_2'] . '</code></dd>';
+        $return .= '<dt>' . $I18N->msg('url_control_id') . ': </dt><dd><code>' . $params[ $table ][ $table . '_id'] . '</code></dd>';
         
 
         $field      = $params[ $table ][ $table . '_restriction_field'];
@@ -78,7 +86,7 @@ if (!function_exists('url_generate_column_data')) {
 
         if ($field != '') {
 
-            $return .= '<dt>' . $I18N->msg('b_url_control_generate_restriction') . ': </dt><dd><code>' . $field . $operator . $value . '</code></dd>';
+            $return .= '<dt>' . $I18N->msg('url_control_generate_restriction') . ': </dt><dd><code>' . $field . $operator . $value . '</code></dd>';
 
         }
 
@@ -102,13 +110,13 @@ if ($func == '') {
 
     $list = rex_list::factory($query, 30, 'url_control_generate');
 //    $list->debug = true;
-    $list->setNoRowsMessage($I18N->msg('b_no_results'));
-    $list->setCaption($I18N->msg('b_tables'));
-    $list->addTableAttribute('summary', $I18N->msg('b_tables'));
+    $list->setNoRowsMessage($I18N->msg('url_control_no_results'));
+    $list->setCaption($I18N->msg('url_control_tables'));
+    $list->addTableAttribute('summary', $I18N->msg('url_control_tables'));
 
     $list->addTableColumnGroup(array(40, '*', 200, 153));
 
-    $header = '<a class="rex-i-element rex-i-generic-add" href="' . $list->getUrl(array('func' => 'add')) . '"><span class="rex-i-element-text">' . $I18N->msg('b_add_entry', $I18N->msg('b_table')) . '</span></a>';
+    $header = '<a class="rex-i-element rex-i-generic-add" href="' . $list->getUrl(array('func' => 'add')) . '"><span class="rex-i-element-text">' . $I18N->msg('url_control_add_entry', $I18N->msg('url_control_table')) . '</span></a>';
     $list->addColumn($header, '###id###', 0, array('<th class="rex-icon">###VALUE###</th>', '<td class="rex-small">###VALUE###</td>'));
 
     $list->removeColumn('id');
@@ -117,15 +125,15 @@ if ($func == '') {
     $list->removeColumn('table');
     $list->removeColumn('table_parameters');
 
-    $list->setColumnLabel('article_id', $I18N->msg('b_article'));
+    $list->setColumnLabel('article_id', $I18N->msg('url_control_article'));
     $list->setColumnFormat('article_id', 'custom', 'url_generate_column_article');
 
     $list->addColumn('data', '');
-    $list->setColumnLabel('data', $I18N->msg('b_url_control_data'));
+    $list->setColumnLabel('data', $I18N->msg('url_control_data'));
     $list->setColumnFormat('data', 'custom', 'url_generate_column_data');
 
-    $list->addColumn($I18N->msg('b_function'), $I18N->msg('b_edit'));
-    $list->setColumnParams($I18N->msg('b_function'), array('func' => 'edit', 'oid' => '###id###'));
+    $list->addColumn($I18N->msg('url_control_function'), $I18N->msg('url_control_edit'));
+    $list->setColumnParams($I18N->msg('url_control_function'), array('func' => 'edit', 'oid' => '###id###'));
 
     $echo = $list->get();
 
@@ -134,9 +142,9 @@ if ($func == '') {
 
 if ($func == 'add' || $func == 'edit') {
 
-    $legend = $func == 'edit' ? $I18N->msg('b_edit') : $I18N->msg('b_add');
+    $legend = $func == 'edit' ? $I18N->msg('url_control_edit') : $I18N->msg('url_control_add');
 
-    $form = new rex_form($REX['TABLE_PREFIX'] . 'url_control_generate', $I18N->msg('b_table') . ' ' . $legend, 'id=' . $oid, 'post', false);
+    $form = new rex_form($REX['TABLE_PREFIX'] . 'url_control_generate', $I18N->msg('url_control_table') . ' ' . $legend, 'id=' . $oid, 'post', false);
     //$form->debug = true;
 
     if ($func == 'edit') {
@@ -144,12 +152,12 @@ if ($func == 'add' || $func == 'edit') {
     }
 
     $field = & $form->addLinkmapField('article_id');
-    $field->setLabel($I18N->msg('b_article'));
+    $field->setLabel($I18N->msg('url_control_article'));
 
 
     if (count($REX['CLANG']) >= 2) {
         $field = & $form->addSelectField('clang');
-        $field->setLabel($I18N->msg('b_language'));
+        $field->setLabel($I18N->msg('url_control_language'));
         $field->setAttribute('style', 'width: 200px;');
         $select = & $field->getSelect();
         $select->setSize(1);
@@ -162,12 +170,12 @@ if ($func == 'add' || $func == 'edit') {
 
 
     $field = & $form->addSelectField('table');
-    $field->setLabel($I18N->msg('b_table'));
+    $field->setLabel($I18N->msg('url_control_table'));
     $field->setAttribute('onchange', 'url_generate_table(this);');
     $field->setAttribute('style', 'width: 200px;');
     $select = & $field->getSelect();
     $select->setSize(1);
-    $select->addOption($I18N->msg('b_no_table_selected'), '');
+    $select->addOption($I18N->msg('url_control_no_table_selected'), '');
 
     $fields = array();
     $tables = rex_sql::showTables();
@@ -199,9 +207,9 @@ if ($func == 'add' || $func == 'edit') {
             $f1 = & $fieldContainer->addGroupedField($group, $type, $name, $value, $attributes = array());
             $f1->setHeader('<div class="url-control-grid3col">');
 
-            $f1->setLabel($I18N->msg('b_url'));
+            $f1->setLabel($I18N->msg('url_control_url'));
             $f1->setAttribute('style', 'width: 200px;');
-            $f1->setNotice($I18N->msg('b_url_control_generate_notice_name'));
+            $f1->setNotice($I18N->msg('url_control_generate_notice_name'));
             $select = & $f1->getSelect();
             $select->setSize(1);
             $select->addOptions($options, true);
@@ -216,7 +224,7 @@ if ($func == 'add' || $func == 'edit') {
             $f1->setAttribute('style', 'width: 200px;');
             $select = & $f1->getSelect();
             $select->setSize(1);
-            $select->addOption($I18N->msg('b_url_control_generate_no_additive'), '');
+            $select->addOption($I18N->msg('url_control_generate_no_additive'), '');
             $select->addOptions($options, true);
 
 
@@ -225,9 +233,9 @@ if ($func == 'add' || $func == 'edit') {
             $name       = $table . '_id';
 
             $f2 = & $fieldContainer->addGroupedField($group, $type, $name, $value, $attributes = array());
-            $f2->setLabel($I18N->msg('b_id'));
+            $f2->setLabel($I18N->msg('url_control_id'));
             $f2->setAttribute('style', 'width: 200px;');
-            $f2->setNotice($I18N->msg('b_url_control_generate_notice_id'));
+            $f2->setNotice($I18N->msg('url_control_generate_notice_id'));
             $select = & $f2->getSelect();
             $select->setSize(1);
             $select->addOptions($options, true);
@@ -239,11 +247,11 @@ if ($func == 'add' || $func == 'edit') {
             $f3 =& $fieldContainer->addGroupedField($group, $type, $name, $value, $attributes = array());
             $f3->setHeader('<div class="url-control-grid3col">');
 
-            $f3->setLabel($I18N->msg('b_url_control_generate_restriction'));
+            $f3->setLabel($I18N->msg('url_control_generate_restriction'));
             $f3->setAttribute('style', 'width: 200px;');
             $select =& $f3->getSelect();
             $select->setSize(1);
-            $select->addOption($I18N->msg('b_url_control_generate_no_filter'), '');
+            $select->addOption($I18N->msg('url_control_generate_no_filter'), '');
             $select->addOptions($options, true);
 
 
@@ -256,7 +264,7 @@ if ($func == 'add' || $func == 'edit') {
             $f4->setAttribute('style', 'width: auto;');
             $select =& $f4->getSelect();
             $select->setSize(1);
-            $select->addOptions(url_generate::getRestrictionOperators());
+            $select->addOptions(UrlGenerator::getRestrictionOperators());
 
 
             $type       = 'text';
@@ -265,7 +273,7 @@ if ($func == 'add' || $func == 'edit') {
 
             $f5 =& $fieldContainer->addGroupedField($group, $type, $name, $value, $attributes = array());
             //$f5->setLabel();
-            $f5->setFooter('<div class="rex-form-row"><p><span class="rex-form-notice">' . $I18N->msg('b_url_control_generate_notice_restriction') . '</span></p></div></div>');
+            $f5->setFooter('<div class="rex-form-row"><p><span class="rex-form-notice">' . $I18N->msg('url_control_generate_notice_restriction') . '</span></p></div></div>');
 
         }
     }
@@ -274,10 +282,8 @@ if ($func == 'add' || $func == 'edit') {
 
 }
 
-require_once $REX['INCLUDE_PATH'] . '/layout/top.php';
-rex_title($addon . ' :: ' . $I18N->msg('b_url_control_generate_title'), $REX['ADDON']['pages'][$addon]);
+
 echo $echo;
-require_once $REX['INCLUDE_PATH'] . '/layout/bottom.php';
 
 ?>
 

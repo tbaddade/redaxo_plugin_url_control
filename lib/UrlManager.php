@@ -8,7 +8,7 @@
  *
  */
 
-class url_manager extends url_control
+class UrlManager extends UrlControl
 {
     public static function control()
     {
