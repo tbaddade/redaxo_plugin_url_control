@@ -19,23 +19,25 @@ $addon = strtolower($addon);
 // Einstellungen für die Rewriter
 $rewriter = array(
     'yrewrite' => array(
-        'extension_point'       => 'YREWRITE_PREPARE',
-        'extension_function'    => 'extension_rewriter_yrewrite',
-        'pages'                 => true,
-        'subpages'              => false,
-        'get_url'               => 'rex_yrewrite::getFullUrlByArticleId',
+        'extension_point' => 'YREWRITE_PREPARE',
+        'extension_function' => 'extension_rewriter_yrewrite',
+        'pages' => true,
+        'subpages' => false,
+        'get_url' => 'rex_yrewrite::getFullUrlByArticleId',
     ),
     'seo42' => array(
-        'extension_point'       => 'SEO42_ARTICLE_ID_NOT_FOUND',
-        'extension_function'    => 'extension_rewriter_seo42',
-        'pages'                 => false,
-        'subpages'              => true,
+        'extension_point' => 'SEO42_ARTICLE_ID_NOT_FOUND',
+        'extension_function' => 'extension_rewriter_seo42',
+        'pages' => false,
+        'subpages' => true,
+        'sitemap_extension_point' => 'SEO42_SITEMAP_ARRAY_CREATED',
+        'sitemap_extension_function' => 'extension_sitemap_seo42',
     ),
     'rexseo' => array(
-        'extension_point'       => 'REXSEO_ARTICLE_ID_NOT_FOUND',
-        'extension_function'    => 'extension_rewriter_rexseo',
-        'pages'                 => false,
-        'subpages'              => true,
+        'extension_point' => 'REXSEO_ARTICLE_ID_NOT_FOUND',
+        'extension_function' => 'extension_rewriter_rexseo',
+        'pages' => false,
+        'subpages' => true,
     ),
 
     /**
@@ -43,11 +45,11 @@ $rewriter = array(
      * rexseo42 - umbenannt in seo42
      */
     'rexseo42' => array(
-        'extension_point'       => 'REXSEO_ARTICLE_ID_NOT_FOUND',
-        'extension_function'    => 'extension_rewriter_rexseo42',
-        'pages'                 => false,
-        'subpages'              => true,
-    ), 
+        'extension_point' => 'REXSEO_ARTICLE_ID_NOT_FOUND',
+        'extension_function' => 'extension_rewriter_rexseo42',
+        'pages' => false,
+        'subpages' => true,
+    ),
 );
 
 
@@ -59,15 +61,15 @@ if ($REX['REDAXO']) {
 
 
 
-$REX['ADDON']['rxid'][$myself]         = '';
+$REX['ADDON']['rxid'][$myself] = '';
 //$REX['ADDON']['name'][$myself]         = $I18N->msg('b_url_generate_title');
-$REX['ADDON']['version'][$myself]      = '0.0';
-$REX['ADDON']['author'][$myself]       = 'blumbeet - web.studio';
-$REX['ADDON']['supportpage'][$myself]  = '';
-$REX['ADDON']['perm'][$myself]         = 'url_control[]';
-$REX['PERM'][]                         = 'url_control[]';
-$REX['ADDON'][$myself]['addon']        = $addon;
-$REX['ADDON'][$myself]['rewriter']     = $rewriter;
+$REX['ADDON']['version'][$myself] = '0.0';
+$REX['ADDON']['author'][$myself] = 'blumbeet - web.studio';
+$REX['ADDON']['supportpage'][$myself] = '';
+$REX['ADDON']['perm'][$myself] = 'url_control[]';
+$REX['PERM'][] = 'url_control[]';
+$REX['ADDON'][$myself]['addon'] = $addon;
+$REX['ADDON'][$myself]['rewriter'] = $rewriter;
 
 
 $mysubpages = array('url_control_generate', 'url_control_manager');
@@ -78,9 +80,9 @@ if (isset($REX['USER']) && $REX['USER'] && ($REX['USER']->isAdmin() || $REX['USE
     if ($rewriter[$addon]['pages']) {
         foreach ($mysubpages as $mysubpage) {
             $be_page = new rex_be_page($I18N->msg('b_' . $mysubpage), array(
-                'page'      => $addon,
-                'subpage'   => $mysubpage
-            )
+                    'page' => $addon,
+                    'subpage' => $mysubpage
+                )
             );
             $be_page->setHref('index.php?page=' . $addon . '&subpage=' . $mysubpage);
             $REX['ADDON']['pages'][$addon][] = $be_page;
@@ -96,7 +98,7 @@ if (isset($REX['USER']) && $REX['USER'] && ($REX['USER']->isAdmin() || $REX['USE
 }
 
 $subpage = rex_request('subpage', 'string');
-if (rex_request('page', 'string') == $addon &&  in_array($subpage, $mysubpages)) {
+if (rex_request('page', 'string') == $addon && in_array($subpage, $mysubpages)) {
     $file = str_replace('control_', '', $subpage);
     $REX['ADDON']['navigation'][$addon]['path'] = $REX['INCLUDE_PATH'] . '/addons/' . $addon . '/plugins/' . $myself . '/pages/' . $file . '.php';
 }
@@ -107,9 +109,15 @@ if ($REX['MOD_REWRITE'] !== false && !$REX['SETUP']) {
     require_once $basedir . '/lib/url_generate.php';
     require_once $basedir . '/lib/url_manager.php';
 
-    $extension_point    = $rewriter[$addon]['extension_point'];
+    $extension_point = $rewriter[$addon]['extension_point'];
     $extension_function = $rewriter[$addon]['extension_function'];
     rex_register_extension($extension_point, 'url_control::' . $extension_function);
+
+    if (isset($rewriter[$addon]['sitemap_extension_point']) && isset($rewriter[$addon]['sitemap_extension_function'])) {
+        $sitemap_extension_point = $rewriter[$addon]['sitemap_extension_point'];
+        $sitemap_extension_function = $rewriter[$addon]['sitemap_extension_function'];
+        rex_register_extension($sitemap_extension_point, 'url_control::' . $sitemap_extension_function);
+    }
 
     rex_register_extension('ADDONS_INCLUDED', 'url_control::extension_register_extensions', '', REX_EXTENSION_EARLY);
 

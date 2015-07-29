@@ -267,6 +267,26 @@ if ($func == 'add' || $func == 'edit') {
             //$f5->setLabel();
             $f5->setFooter('<div class="rex-form-row"><p><span class="rex-form-notice">' . $I18N->msg('b_url_control_generate_notice_restriction') . '</span></p></div></div>');
 
+
+
+
+
+            $type       = 'select';
+            $name       = $table . '_sitemap_settings';
+            $sitemapOptions    = array(
+                0 => 'Artikel ohne dynamische Seiten',
+                1 => 'Artikel mit dynamische Seiten',
+                2 => 'Nur dynamische Seiten',
+            );
+
+            $f2 = & $fieldContainer->addGroupedField($group, $type, $name, $value, $attributes = array());
+            $f2->setLabel($I18N->msg('b_sitemap'));
+            $f2->setAttribute('style', 'width: 200px;');
+            $f2->setNotice($I18N->msg('b_url_control_generate_notice_sitemap'));
+            $select = & $f2->getSelect();
+            $select->setSize(1);
+            $select->addOptions($sitemapOptions, true);
+
         }
     }
 

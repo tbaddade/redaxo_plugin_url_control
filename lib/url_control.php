@@ -101,7 +101,76 @@ class url_control
         return $params;
     }
 
+    public static function extension_sitemap_seo42($sitemap) {
+        global $REX;
+        $myself   = 'url_control';
+        $addon    = $REX['ADDON'][$myself]['addon'];
+        $rewriter = $REX['ADDON'][$myself]['rewriter'];
 
+        $query = '  SELECT  `article_id`,
+                            `clang`,
+                            `table`,
+                            `table_parameters`
+                    FROM    ' . $REX['TABLE_PREFIX'] . 'url_control_generate
+                    ';
+        $sql = rex_sql::factory();
+        $sql->setQuery($query);
+
+        $paths = array();
+        if ($sql->getRows() >= 1) {
+            $results = $sql->getArray();
+            foreach ($results as $result) {
+
+                $article_id = $result['article_id'];
+                $clang      = $result['clang'];
+
+                $a = OOArticle::getArticleById($article_id, $clang);
+                if ($a instanceof OOArticle) {
+
+                    if (isset($rewriter[$addon]['get_url'])) {
+                        $func = $rewriter[$addon]['get_url'];
+                        $path = call_user_func($func, $article_id, $clang);
+                    } else {
+                        $path = $a->getUrl();
+                    }
+
+                    $table          = $result['table'];
+                    $table_params   = unserialize($result['table_parameters']);
+
+                    if(isset($table_params[$table][$table . '_sitemap_settings'])) {
+                        $sitemapSetting   = $table_params[$table][$table . '_sitemap_settings'];
+                    } else {
+                        $sitemapSetting = 'Artikel ohne dynamische Seiten';
+                    }
+                    switch($sitemapSetting) {
+                        case 'Artikel ohne dynamische Seiten':
+                            break;
+                        case 'Artikel mit dynamische Seiten':
+                            $sitemapNode = $sitemap['subject'][$a->getId()][0];
+                            $tableUrls = url_generate::getUrlsByTable($table);
+                            foreach($tableUrls as $tableUrl) {
+                                $sitemapNode['loc'] = $tableUrl;
+                                $sitemap['subject'][][] = $sitemapNode;
+                            }
+                            break;
+                        case 'Nur dynamische Seiten':
+                            $sitemapNode = $sitemap['subject'][$a->getId()][0];
+                            unset($sitemap['subject'][$a->getId()]);
+                            $tableUrls = url_generate::getUrlsByTable($table);
+                            foreach($tableUrls as $tableUrl) {
+                                $sitemapNode['loc'] = $tableUrl;
+                                $sitemap['subject'][][] = $sitemapNode;
+                            }
+                            break;
+                    }
+
+
+
+                }
+            }
+        }
+        return $sitemap['subject'];
+    }
 
 
 

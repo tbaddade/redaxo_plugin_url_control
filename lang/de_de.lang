@@ -46,6 +46,7 @@ b_gross = Brutto
 b_http_type = Http Typ
 
 b_id = Id
+b_sitemap = Sitemap
 b_image = Image
 b_inactive = inaktiv
 
@@ -112,6 +113,7 @@ b_url_control_generate_title = Urls erzeugen
 b_url_control_generate_restriction = Filter
 
 b_url_control_generate_notice_id = Spalte der dazugehörigen eindeutigen Id
+b_url_control_generate_notice_sitemap = Verhalten in der Sitemap
 b_url_control_generate_notice_name = Spalten aus der die Url erzeugt wird
 b_url_control_generate_notice_restriction = Hiermit kann das erstellen der Urls für den obigen Artikel eingeschränkt werden. Hilfreich bei Relationen mit einer anderen Tabelle. News können zum Bsp. in mehrere Kategorien aufgeteilt werden.
 
