@@ -1,8 +1,4 @@
-**aktuelle Version noch nicht getestet mit**
-
-* rexseo
-* rexseo42
-
+**Dieser inofizielle Fork unterstützt SEO42 4.0+**
 
 redaxo_plugin_url_control
 ================================================================================
