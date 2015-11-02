@@ -1,4 +1,3 @@
-**Dieser inofizielle Fork unterstützt SEO42 4.0+**
 
 redaxo_plugin_url_control
 ================================================================================
