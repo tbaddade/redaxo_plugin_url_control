@@ -1,8 +1,4 @@
-**aktuelle Version noch nicht getestet mit**
-
-* rexseo
-* rexseo42
-
+**Dieser inofizielle Fork unterstützt SEO42 4.0+**
 
 redaxo_plugin_url_control
 ================================================================================
@@ -77,4 +73,4 @@ unterstützte Rewriter
 --------------------------------------------------------------------------------
 * [yrewriter](https://github.com/dergel/redaxo4_yrewrite) von dergel (Jan Kristinus)
 * [rexseo](https://github.com/gn2netwerk/rexseo) von GN2 Netwerk und jdlx
-* [rexseo42](https://github.com/rexdude/rexseo42) von RexDude
+* [seo42](https://github.com/RexDude/seo42) von RexDude
