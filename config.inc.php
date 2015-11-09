@@ -13,7 +13,7 @@ $basedir = __DIR__;
 $myself = 'url_control';
 
 $addon = str_replace(DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $myself, '', $basedir);
-$addon = ltrim(substr($addon, strrpos($addon, '/')), DIRECTORY_SEPARATOR);
+$addon = ltrim(substr($addon, strrpos($addon, DIRECTORY_SEPARATOR)), DIRECTORY_SEPARATOR);
 $addon = strtolower($addon);
 
 // Einstellungen für die Rewriter
