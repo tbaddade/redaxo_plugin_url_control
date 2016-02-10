@@ -1,3 +1,5 @@
+Das AddOn für **REDAXO 5** wurde neu geschrieben und hat sein eigenes [Repository](https://github.com/tbaddade/redaxo_url)
+
 
 redaxo_plugin_url_control
 ================================================================================
